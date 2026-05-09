@@ -1,0 +1,6 @@
+method,mean_profit,lift_vs_champion,worst_day_profit,loss_days,selected_counts
+champion,7850.814184151027,0.0,-15992.705956129585,5,ens_champion_segmented6:120
+static,7850.814184151027,0.0,-15992.705956129585,5,ens_champion_segmented6:120
+rule,7860.005165010347,9.190980859320007,-15992.705956129585,5,lgb_segmented_6_margin_core_last_180d:75;ens_champion_segmented6:45
+logistic,7836.136759223833,-14.677424927193897,-15992.705956129585,6,lgb_segmented_6_margin_core_last_180d:48;ens_champion_segmented6:37;lgb_segmented_6_last_180d:35
+oracle_selector,8319.345112969655,468.5309288186281,-12600.372108584266,5,

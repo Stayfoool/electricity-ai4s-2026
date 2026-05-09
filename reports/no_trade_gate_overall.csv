@@ -1,0 +1,3 @@
+method,mean_profit,lift_vs_champion,worst_day_profit,loss_days,no_trade_days
+champion,7850.814184151027,0.0,-15992.705956129585,5,0
+no_trade_gate,7415.745985636507,-435.0681985145202,-15992.705956129585,5,4

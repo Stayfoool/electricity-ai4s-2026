@@ -1,0 +1,35 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.specstory/
+
+# Local environments
+.venv/
+.env
+
+# Competition data and local-only materials
+eletricmaterial/
+electricity_data/
+/data/
+
+# Large or machine-specific experiment artifacts
+artifacts/
+mlruns/
+papers/
+papers_txt/
+*.pt
+*.pth
+*.pkl
+*.pickle
+*.joblib
+*.cbm
+*.model
+*.onnx
+
+# Keep reports/configs in Git; selected output CSVs may be committed intentionally.
+outputs/tmp/
+outputs/cache/

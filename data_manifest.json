@@ -1,0 +1,34 @@
+{
+  "version": "2026-05-09",
+  "source": "AI4S competition official data, shared outside Git",
+  "root": "eletricmaterial",
+  "files": [
+    {
+      "path": "to_sais_new/train/mengxi_boundary_anon_filtered.csv",
+      "sha256": "c6f30d93a7ce6ce935629cd601daf20b37fdc90db05f427c3535f9b168478335",
+      "size_bytes": 9919442,
+      "required": true
+    },
+    {
+      "path": "to_sais_new/train/mengxi_node_price_selected.csv",
+      "sha256": "79ce16b0694c6b50e9342f41939ab2ebb004c3f15277c9660829683336565582",
+      "size_bytes": 1309898,
+      "required": true
+    },
+    {
+      "path": "to_sais_new/test/test_in_feature_ori.csv",
+      "sha256": "2371517e959511a497397b17d816b88204faedaea5d99e1f07b562393e4568e0",
+      "size_bytes": 857441,
+      "required": true
+    }
+  ],
+  "directories": [
+    {
+      "path": "to_sais_new/all_nc",
+      "file_count": 425,
+      "total_size_bytes": 13339861924,
+      "file_list_sha256": "b9c736a69eaa7264512fa95d069d574d1975ed5a100422ed2b07282093a07bff",
+      "required": true
+    }
+  ]
+}

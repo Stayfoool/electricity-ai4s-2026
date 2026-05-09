@@ -1,0 +1,2 @@
+"""Electricity market competition harness."""
+
