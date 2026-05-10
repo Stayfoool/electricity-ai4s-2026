@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import numpy as np
+import pandas as pd
 from analyze_strategy_gate import (
     BASE_GATE_FEATURES,
     CHAMPION,
@@ -10,8 +12,6 @@ from analyze_strategy_gate import (
     load_config,
     profit_col,
 )
-import numpy as np
-import pandas as pd
 
 CHAMPION_PROFIT = profit_col(CHAMPION)
 
