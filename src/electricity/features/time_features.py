@@ -138,12 +138,6 @@ def selected_derived_features(feature_sets: dict) -> list[str]:
     columns: list[str] = []
     columns += _selected_group_features(
         feature_sets,
-        list_key="bid_space_features",
-        full_key="bid_space",
-        allowed=BID_SPACE_FEATURES,
-    )
-    columns += _selected_group_features(
-        feature_sets,
         list_key="business_features",
         full_key="business",
         allowed=BUSINESS_FEATURES,
@@ -278,6 +272,12 @@ def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times")
 def feature_columns(cfg: dict) -> list[str]:
     columns = list(cfg["data"]["feature_cols"]) + TIME_FEATURES
     feature_sets = cfg.get("feature_sets", {})
+    columns += _selected_group_features(
+        feature_sets,
+        list_key="bid_space_features",
+        full_key="bid_space",
+        allowed=BID_SPACE_FEATURES,
+    )
     columns += selected_derived_features(feature_sets)
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
