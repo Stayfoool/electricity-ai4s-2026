@@ -202,13 +202,6 @@ def add_derived_features(df: pd.DataFrame, *, time_col: str = "times") -> pd.Dat
     solar = out["光伏预测值"]
     hydro = out["水电预测值"]
 
-    out["bid_space"] = (
-        out["系统负荷预测值"]
-        - renewable
-        - out["联络线预测值"]
-        - hydro
-        - out["非市场化机组预测值"]
-    )
     out["net_load"] = out["系统负荷预测值"] - renewable - hydro
     out["renewable_ratio"] = renewable / load
     out["wind_ratio"] = wind / load
@@ -228,6 +221,18 @@ def add_derived_features(df: pd.DataFrame, *, time_col: str = "times") -> pd.Dat
     out["load_day_rank_pct"] = out.groupby(date)["系统负荷预测值"].rank(pct=True)
     out["solar_day_rank_pct"] = out.groupby(date)["光伏预测值"].rank(pct=True)
     out["wind_day_rank_pct"] = out.groupby(date)["风电预测值"].rank(pct=True)
+    return out
+
+
+def add_bid_space_features(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    out["bid_space"] = (
+        out["系统负荷预测值"]
+        - out["风光总加预测值"]
+        - out["联络线预测值"]
+        - out["水电预测值"]
+        - out["非市场化机组预测值"]
+    )
     return out
 
 
@@ -281,6 +286,8 @@ def nwp_feature_columns(cfg: dict) -> list[str]:
 def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     out = add_time_features(df, time_col=time_col)
     feature_sets = cfg.get("feature_sets", {})
+    if selected_bid_space_features(feature_sets):
+        out = add_bid_space_features(out)
     if selected_derived_features(feature_sets):
         out = add_derived_features(out, time_col=time_col)
     if feature_sets.get("nwp", False):

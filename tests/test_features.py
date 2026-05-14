@@ -7,6 +7,7 @@ from electricity.features import (
     NWP_CORE_FEATURES,
     NWP_FEATURES,
     NWP_INTERACTION_FEATURES,
+    add_bid_space_features,
     add_derived_features,
     build_feature_frame,
     feature_columns,
@@ -21,6 +22,23 @@ def test_add_time_features() -> None:
     assert out.loc[0, "minute"] == 15
     assert out.loc[0, "quarter"] == 1
     assert "quarter_sin" in out.columns
+
+
+def test_add_bid_space_features() -> None:
+    df = pd.DataFrame(
+        {
+            "系统负荷预测值": [4.0, 8.0],
+            "风光总加预测值": [1.0, 4.0],
+            "联络线预测值": [0.4, 0.8],
+            "水电预测值": [0.5, 1.0],
+            "非市场化机组预测值": [1.0, 2.0],
+        }
+    )
+
+    out = add_bid_space_features(df)
+
+    assert out.loc[0, "bid_space"] == 1.1
+    assert out.loc[1, "bid_space"] == 0.2
 
 
 def test_add_derived_features() -> None:
@@ -39,7 +57,6 @@ def test_add_derived_features() -> None:
 
     out = add_derived_features(df)
 
-    assert out.loc[0, "bid_space"] == 1.1
     assert out.loc[0, "net_load"] == 2.5
     assert out.loc[1, "renewable_ratio"] == 0.5
     assert "net_load_day_rank_pct" in out.columns
