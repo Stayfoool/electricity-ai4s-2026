@@ -27,6 +27,10 @@ BUSINESS_FEATURES = [
     "wind_solar_balance",
 ]
 
+BID_SPACE_FEATURES = [
+    "bid_space",
+]
+
 DEVIATION_FEATURES = [
     "net_load_day_mean",
     "net_load_day_dev",
@@ -100,6 +104,7 @@ NWP_INTERACTION_FEATURES = [
 ]
 
 FEATURE_GROUPS = {
+    "bid_space_features": BID_SPACE_FEATURES,
     "business_features": BUSINESS_FEATURES,
     "deviation_features": DEVIATION_FEATURES,
     "rank_features": RANK_FEATURES,
@@ -131,6 +136,12 @@ def _selected_group_features(
 
 def selected_derived_features(feature_sets: dict) -> list[str]:
     columns: list[str] = []
+    columns += _selected_group_features(
+        feature_sets,
+        list_key="bid_space_features",
+        full_key="bid_space",
+        allowed=BID_SPACE_FEATURES,
+    )
     columns += _selected_group_features(
         feature_sets,
         list_key="business_features",
@@ -178,6 +189,13 @@ def add_derived_features(df: pd.DataFrame, *, time_col: str = "times") -> pd.Dat
     solar = out["光伏预测值"]
     hydro = out["水电预测值"]
 
+    out["bid_space"] = (
+        out["系统负荷预测值"]
+        - renewable
+        - out["联络线预测值"]
+        - hydro
+        - out["非市场化机组预测值"]
+    )
     out["net_load"] = out["系统负荷预测值"] - renewable - hydro
     out["renewable_ratio"] = renewable / load
     out["wind_ratio"] = wind / load

@@ -1,4 +1,5 @@
 from .time_features import (
+    BID_SPACE_FEATURES,
     BUSINESS_FEATURES,
     DERIVED_FEATURES,
     DEVIATION_FEATURES,
@@ -18,6 +19,7 @@ from .time_features import (
 
 __all__ = [
     "DERIVED_FEATURES",
+    "BID_SPACE_FEATURES",
     "BUSINESS_FEATURES",
     "DEVIATION_FEATURES",
     "NWP_FEATURES",

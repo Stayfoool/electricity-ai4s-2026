@@ -39,6 +39,7 @@ def test_add_derived_features() -> None:
 
     out = add_derived_features(df)
 
+    assert out.loc[0, "bid_space"] == 1.1
     assert out.loc[0, "net_load"] == 2.5
     assert out.loc[1, "renewable_ratio"] == 0.5
     assert "net_load_day_rank_pct" in out.columns
@@ -47,9 +48,20 @@ def test_add_derived_features() -> None:
 def test_feature_columns_include_derived_only_when_enabled() -> None:
     cfg = {"data": {"feature_cols": ["系统负荷预测值"]}, "feature_sets": {"derived": False}}
     assert "net_load" not in feature_columns(cfg)
+    assert "bid_space" not in feature_columns(cfg)
 
     cfg["feature_sets"]["derived"] = True
     assert "net_load" in feature_columns(cfg)
+    assert "bid_space" not in feature_columns(cfg)
+
+
+def test_feature_columns_support_bid_space_feature_group() -> None:
+    cfg = {"data": {"feature_cols": ["系统负荷预测值"]}, "feature_sets": {"bid_space": True}}
+
+    columns = feature_columns(cfg)
+
+    assert "bid_space" in columns
+    assert "net_load" not in columns
 
 
 def test_feature_columns_support_feature_families() -> None:

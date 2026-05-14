@@ -31,6 +31,13 @@ def test_feature_columns_supports_explicit_business_subset() -> None:
     assert "tie_line_ratio" not in cols
 
 
+def test_feature_columns_supports_bid_space_subset() -> None:
+    cols = feature_columns(_base_cfg({"bid_space_features": ["bid_space"]}))
+
+    assert "bid_space" in cols
+    assert "net_load" not in cols
+
+
 def test_feature_columns_supports_full_group_override() -> None:
     cols = feature_columns(_base_cfg({"business": True}))
 
@@ -42,3 +49,8 @@ def test_feature_columns_supports_full_group_override() -> None:
 def test_feature_columns_rejects_unknown_explicit_feature() -> None:
     with pytest.raises(ValueError, match="unsupported business_features"):
         feature_columns(_base_cfg({"business_features": ["bad_feature_name"]}))
+
+
+def test_feature_columns_rejects_unknown_bid_space_feature() -> None:
+    with pytest.raises(ValueError, match="unsupported bid_space_features"):
+        feature_columns(_base_cfg({"bid_space_features": ["bad_feature_name"]}))
