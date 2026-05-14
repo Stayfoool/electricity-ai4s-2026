@@ -37,8 +37,8 @@ def test_add_bid_space_features() -> None:
 
     out = add_bid_space_features(df)
 
-    assert out.loc[0, "bid_space"] == 1.1
-    assert out.loc[1, "bid_space"] == 0.2
+    assert out.loc[0, "bid_space"] == pytest.approx(1.1)
+    assert out.loc[1, "bid_space"] == pytest.approx(0.2)
 
 
 def test_add_derived_features() -> None:
