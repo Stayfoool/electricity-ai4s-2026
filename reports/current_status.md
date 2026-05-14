@@ -758,3 +758,38 @@ Decision:
 - This is the first candidate-selection rule with positive lift in every validation fold.
 - It is a credible submit candidate, but should not automatically replace `outputs/output.csv` yet.
 - Next step before promotion: compare this candidate against the current default submit assumptions and decide whether to submit both if the platform allows multiple daily attempts.
+
+## Bid Space Feature Experiment
+
+Completed on 2026-05-14.
+
+Feature definition:
+
+- `bid_space = 系统负荷预测值 - 风光总加预测值 - 联络线预测值 - 水电预测值 - 非市场化机组预测值`
+
+Implementation:
+
+- `src/electricity/features/time_features.py`
+- `configs/lgb_bid_space_last_180d.yaml`
+- `configs/lgb_segmented_6_bid_space_last_180d.yaml`
+
+Validation result:
+
+| model | mean profit | worst fold | oracle ratio mean | loss days | curve z-RMSE | charge gap | discharge gap | decision |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `lgb_baseline_last_180d` | `7667.670` | `5859.852` | `0.675228` | `7` | `0.870785` | `12.611` | `10.393` | reference |
+| `lgb_bid_space_last_180d` | `7359.631` | `5966.175` | `0.649045` | `9` | `0.868422` | `14.802` | `10.600` | rejected |
+| `lgb_segmented_6_last_180d` | `7806.961` | `5891.334` | `0.685423` | `7` | `0.868496` | `13.674` | `10.402` | reference |
+| `lgb_segmented_6_bid_space_last_180d` | `7763.456` | `6067.417` | `0.683118` | `5` | `0.857750` | `13.700` | `10.090` | stability candidate |
+| `ens_champion_segmented6` | `7917.210` | `5867.398` | `0.694125` | `5` | `0.850138` | `12.857` | `9.807` | current champion |
+
+Interpretation:
+
+- Adding `bid_space` to the plain 180-day LightGBM hurts mean profit and increases loss days, so it is rejected.
+- Adding `bid_space` to the six-segment LightGBM does not beat the existing segmented model or champion on mean profit.
+- The segmented bid-space model does improve worst fold, loss days, curve z-RMSE, and discharge gap versus `lgb_segmented_6_last_180d`, so it is useful as a stability candidate.
+- Do not promote this feature into the current champion yet.
+
+Recommended next step:
+
+- If revisiting this signal, test it as an ensemble/stability expert rather than a direct replacement for price prediction.
