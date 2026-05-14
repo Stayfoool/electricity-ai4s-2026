@@ -157,6 +157,25 @@ def selected_derived_features(feature_sets: dict) -> list[str]:
     return columns
 
 
+def selected_bid_space_features(feature_sets: dict) -> list[str]:
+    if not feature_sets.get("bid_space", False) and not feature_sets.get(
+        "bid_space_features"
+    ):
+        return []
+
+    explicit = feature_sets.get("bid_space_features", [])
+    if feature_sets.get("bid_space", False):
+        return list(BID_SPACE_FEATURES)
+    if isinstance(explicit, bool):
+        return list(BID_SPACE_FEATURES) if explicit else []
+
+    explicit_list = list(explicit)
+    invalid = sorted(set(explicit_list) - set(BID_SPACE_FEATURES))
+    if invalid:
+        raise ValueError(f"unsupported bid_space_features: {invalid}")
+    return [name for name in BID_SPACE_FEATURES if name in explicit_list]
+
+
 def add_time_features(df: pd.DataFrame, *, time_col: str = "times") -> pd.DataFrame:
     out = df.copy()
     ts = out[time_col]
@@ -272,12 +291,7 @@ def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times")
 def feature_columns(cfg: dict) -> list[str]:
     columns = list(cfg["data"]["feature_cols"]) + TIME_FEATURES
     feature_sets = cfg.get("feature_sets", {})
-    columns += _selected_group_features(
-        feature_sets,
-        list_key="bid_space_features",
-        full_key="bid_space",
-        allowed=BID_SPACE_FEATURES,
-    )
+    columns += selected_bid_space_features(feature_sets)
     columns += selected_derived_features(feature_sets)
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
