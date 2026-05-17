@@ -14,7 +14,6 @@ without retraining models.
 from __future__ import annotations
 
 import argparse
-from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
@@ -114,7 +113,13 @@ def member_predict_fold(
     return preds, valid_df
 
 
-def model_spec_frame(df: pd.DataFrame, spec: dict, *, time_col: str, target_col: str) -> pd.DataFrame:
+def model_spec_frame(
+    df: pd.DataFrame,
+    spec: dict,
+    *,
+    time_col: str,
+    target_col: str,
+) -> pd.DataFrame:
     build_spec = segmented_feature_build_spec(spec)
     return add_target_absolute(
         build_feature_frame(df, build_spec, time_col=time_col),
@@ -133,7 +138,10 @@ def main() -> None:
     target_col = cfg["data"]["target_col"]
 
     raw = load_train_frame_fast(cfg)
-    print(f"loaded train frame: {len(raw)} rows from {raw[time_col].min()} to {raw[time_col].max()}")
+    print(
+        f"loaded train frame: {len(raw)} rows from "
+        f"{raw[time_col].min()} to {raw[time_col].max()}"
+    )
 
     specs = cfg["ensemble"]["members"]
     weights = np.array([float(s.get("weight", 1.0)) for s in specs], dtype=float)
@@ -141,12 +149,17 @@ def main() -> None:
     print(f"ensemble members: {[s['model']['name'] for s in specs]}")
     print(f"weights         : {weights.tolist()}")
 
-    member_frames = [model_spec_frame(raw, s, time_col=time_col, target_col=target_col) for s in specs]
+    member_frames = [
+        model_spec_frame(raw, s, time_col=time_col, target_col=target_col) for s in specs
+    ]
     member_feat_cols = [feature_columns(s) for s in specs]
 
     all_rows: list[pd.DataFrame] = []
     for fold in cfg["folds"]:
-        print(f"\n[fold] {fold['name']} train<={fold['train_end']} valid {fold['valid_start']}..{fold['valid_end']}")
+        print(
+            f"\n[fold] {fold['name']} train<={fold['train_end']} "
+            f"valid {fold['valid_start']}..{fold['valid_end']}"
+        )
         member_preds: list[np.ndarray] = []
         valid_ref: pd.DataFrame | None = None
         for spec, frame, fcols in zip(specs, member_frames, member_feat_cols, strict=True):

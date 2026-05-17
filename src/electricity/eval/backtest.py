@@ -293,10 +293,17 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
         mlflow.log_param("train_window_days", train_window_days or "all_past")
         mlflow.log_param("feature_count", len(feature_cols))
         prior_cfg = cfg.get("dispatch", {}).get("prior") or {}
-        mlflow.log_param("dispatch_prior_enabled", bool(prior_cfg.get("enabled", False)))
-        if prior_cfg.get("enabled", False):
-            mlflow.log_param("dispatch_prior_lambda_charge", float(prior_cfg.get("lambda_charge", 0.0)))
-            mlflow.log_param("dispatch_prior_lambda_discharge", float(prior_cfg.get("lambda_discharge", 0.0)))
+        prior_enabled = bool(prior_cfg.get("enabled", False))
+        mlflow.log_param("dispatch_prior_enabled", prior_enabled)
+        if prior_enabled:
+            mlflow.log_param(
+                "dispatch_prior_lambda_charge",
+                float(prior_cfg.get("lambda_charge", 0.0)),
+            )
+            mlflow.log_param(
+                "dispatch_prior_lambda_discharge",
+                float(prior_cfg.get("lambda_discharge", 0.0)),
+            )
             mlflow.log_param("dispatch_prior_alpha", float(prior_cfg.get("alpha", 0.5)))
 
         for fold in cfg["folds"]:
@@ -636,10 +643,17 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
         mlflow.log_param("ensemble_members", ",".join(spec["model"]["name"] for spec in specs))
         mlflow.log_param("ensemble_weights", ",".join(str(w) for w in weights))
         prior_cfg = cfg.get("dispatch", {}).get("prior") or {}
-        mlflow.log_param("dispatch_prior_enabled", bool(prior_cfg.get("enabled", False)))
-        if prior_cfg.get("enabled", False):
-            mlflow.log_param("dispatch_prior_lambda_charge", float(prior_cfg.get("lambda_charge", 0.0)))
-            mlflow.log_param("dispatch_prior_lambda_discharge", float(prior_cfg.get("lambda_discharge", 0.0)))
+        prior_enabled = bool(prior_cfg.get("enabled", False))
+        mlflow.log_param("dispatch_prior_enabled", prior_enabled)
+        if prior_enabled:
+            mlflow.log_param(
+                "dispatch_prior_lambda_charge",
+                float(prior_cfg.get("lambda_charge", 0.0)),
+            )
+            mlflow.log_param(
+                "dispatch_prior_lambda_discharge",
+                float(prior_cfg.get("lambda_discharge", 0.0)),
+            )
             mlflow.log_param("dispatch_prior_alpha", float(prior_cfg.get("alpha", 0.5)))
 
         for fold in cfg["folds"]:

@@ -95,7 +95,7 @@ def dispatch_with_prior(
     lambda_c: float,
     lambda_d: float,
 ) -> tuple[int, int, float]:
-    """Return (tc, td, predicted_spread_only) maximizing spread + lambda_c*log_pc + lambda_d*log_pd."""
+    """Return (tc, td, predicted_spread_only) maximizing the prior-augmented score."""
     prefix = np.concatenate([[0.0], np.cumsum(pred_prices_96)])
     block_sum = prefix[BLOCK:] - prefix[:-BLOCK]
 
