@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from electricity.data import load_test_frame, load_train_frame
-from electricity.dispatch import optimize_day
+from electricity.dispatch import build_dispatch_prior, optimize_day
 from electricity.eval.segmented_utils import (
     add_slot_and_segment,
     segment_boundaries,
@@ -27,12 +27,40 @@ def _format_times(series: pd.Series) -> pd.Series:
     return series.dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
+def _maybe_build_prior(
+    cfg: dict,
+    train_labels: pd.DataFrame | None,
+    *,
+    time_col: str,
+    target_col: str,
+) -> tuple[np.ndarray | None, np.ndarray | None, float, float]:
+    """Build dispatch prior from training labels if enabled in cfg.dispatch.prior."""
+    prior_cfg = cfg.get("dispatch", {}).get("prior")
+    if not prior_cfg or not prior_cfg.get("enabled", False) or train_labels is None:
+        return None, None, 0.0, 0.0
+    alpha = float(prior_cfg.get("alpha", 0.5))
+    lambda_charge = float(prior_cfg.get("lambda_charge", 0.0))
+    lambda_discharge = float(prior_cfg.get("lambda_discharge", 0.0))
+    log_pc, log_pd = build_dispatch_prior(
+        train_labels[[time_col, target_col]],
+        time_col=time_col,
+        target_col=target_col,
+        train_end=None,
+        alpha=alpha,
+    )
+    return log_pc, log_pd, lambda_charge, lambda_discharge
+
+
 def build_power_schedule(
     df: pd.DataFrame,
     *,
     time_col: str,
     price_col: str,
     cfg: dict,
+    log_prior_charge: np.ndarray | None = None,
+    log_prior_discharge: np.ndarray | None = None,
+    lambda_charge: float = 0.0,
+    lambda_discharge: float = 0.0,
 ) -> np.ndarray:
     power = np.zeros(len(df), dtype=float)
     work = df[[time_col, price_col]].copy()
@@ -53,6 +81,10 @@ def build_power_schedule(
             block_size=int(cfg["dispatch"]["block_size"]),
             charge_power=float(cfg["dispatch"]["charge_power"]),
             discharge_power=float(cfg["dispatch"]["discharge_power"]),
+            log_prior_charge=log_prior_charge,
+            log_prior_discharge=log_prior_discharge,
+            lambda_charge=lambda_charge,
+            lambda_discharge=lambda_discharge,
         )
         power[group.index.to_numpy()] = result.power
 
@@ -211,7 +243,8 @@ def run_submit(cfg: dict, *, config_path: str) -> Path:
     outputs_dir.mkdir(parents=True, exist_ok=True)
 
     print("loading_train", flush=True)
-    train_df = build_feature_frame(load_train_frame(cfg), build_spec, time_col=time_col)
+    raw_train = load_train_frame(cfg)
+    train_df = build_feature_frame(raw_train, build_spec, time_col=time_col)
     print("predicting_test", flush=True)
     test_df = build_feature_frame(load_test_frame(cfg), build_spec, time_col=time_col)
     print("training_full_model", flush=True)
@@ -223,11 +256,23 @@ def run_submit(cfg: dict, *, config_path: str) -> Path:
         spec=cfg,
         time_col=time_col,
     )
+    log_pc, log_pd, lc_w, ld_w = _maybe_build_prior(
+        cfg, raw_train, time_col=time_col, target_col=target_col,
+    )
+    if log_pc is not None:
+        print(
+            f"dispatch_prior_enabled lambda_charge={lc_w} lambda_discharge={ld_w}",
+            flush=True,
+        )
     test_df["power"] = build_power_schedule(
         test_df,
         time_col=time_col,
         price_col="实时价格",
         cfg=cfg,
+        log_prior_charge=log_pc,
+        log_prior_discharge=log_pd,
+        lambda_charge=lc_w,
+        lambda_discharge=ld_w,
     )
 
     submission = pd.DataFrame(
@@ -290,11 +335,23 @@ def run_ensemble_submit(cfg: dict, *, config_path: str) -> Path:
 
     base_test = raw_test.sort_values(time_col).reset_index(drop=True)
     base_test["实时价格"] = np.average(np.vstack(preds), axis=0, weights=weights)
+    log_pc, log_pd, lc_w, ld_w = _maybe_build_prior(
+        cfg, raw_train, time_col=time_col, target_col=target_col,
+    )
+    if log_pc is not None:
+        print(
+            f"dispatch_prior_enabled lambda_charge={lc_w} lambda_discharge={ld_w}",
+            flush=True,
+        )
     base_test["power"] = build_power_schedule(
         base_test,
         time_col=time_col,
         price_col="实时价格",
         cfg=cfg,
+        log_prior_charge=log_pc,
+        log_prior_discharge=log_pd,
+        lambda_charge=lc_w,
+        lambda_discharge=ld_w,
     )
 
     submission = pd.DataFrame(

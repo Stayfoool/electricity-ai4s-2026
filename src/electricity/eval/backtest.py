@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from electricity.data import load_train_frame
-from electricity.dispatch import optimize_day
+from electricity.dispatch import build_dispatch_prior, optimize_day
 from electricity.eval.metrics import daily_profit
 from electricity.eval.segmented_utils import (
     add_slot_and_segment,
@@ -94,12 +94,48 @@ def _daily_curve_z_rmse(
     return float(np.sqrt(np.mean(errors))) if errors else 0.0
 
 
+def _maybe_build_prior(
+    cfg: dict,
+    labels: pd.DataFrame,
+    *,
+    time_col: str,
+    target_col: str,
+    train_end: pd.Timestamp,
+) -> tuple[np.ndarray | None, np.ndarray | None, float, float]:
+    """Return (log_prior_charge, log_prior_discharge, lambda_c, lambda_d).
+
+    The dispatch prior block under ``cfg['dispatch']['prior']`` controls behavior:
+        enabled (bool): turn the prior on/off (default off, fully backward compatible).
+        lambda_charge (float): strength on the charge-slot log prior.
+        lambda_discharge (float): strength on the discharge-slot log prior.
+        alpha (float): Laplace smoothing strength when building the prior.
+    """
+    prior_cfg = cfg.get("dispatch", {}).get("prior")
+    if not prior_cfg or not prior_cfg.get("enabled", False):
+        return None, None, 0.0, 0.0
+    alpha = float(prior_cfg.get("alpha", 0.5))
+    lambda_charge = float(prior_cfg.get("lambda_charge", 0.0))
+    lambda_discharge = float(prior_cfg.get("lambda_discharge", 0.0))
+    log_pc, log_pd = build_dispatch_prior(
+        labels[[time_col, target_col]],
+        time_col=time_col,
+        target_col=target_col,
+        train_end=train_end,
+        alpha=alpha,
+    )
+    return log_pc, log_pd, lambda_charge, lambda_discharge
+
+
 def _evaluate_dispatch(
     valid_df: pd.DataFrame,
     *,
     time_col: str,
     target_col: str,
     tau: float,
+    log_prior_charge: np.ndarray | None = None,
+    log_prior_discharge: np.ndarray | None = None,
+    lambda_charge: float = 0.0,
+    lambda_discharge: float = 0.0,
 ) -> dict:
     by_day = valid_df[[time_col, target_col, "pred"]].copy()
     by_day["date"] = by_day[time_col].dt.normalize()
@@ -124,7 +160,14 @@ def _evaluate_dispatch(
 
         true_prices = group[target_col].to_numpy(dtype=float)
         pred_prices = group["pred"].to_numpy(dtype=float)
-        result = optimize_day(pred_prices, tau=tau)
+        result = optimize_day(
+            pred_prices,
+            tau=tau,
+            log_prior_charge=log_prior_charge,
+            log_prior_discharge=log_prior_discharge,
+            lambda_charge=lambda_charge,
+            lambda_discharge=lambda_discharge,
+        )
         oracle = optimize_day(true_prices, tau=0.0)
         profit = daily_profit(true_prices, result.power)
         oracle_profit = daily_profit(true_prices, oracle.power)
@@ -249,6 +292,19 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
         mlflow.log_param("target_mode", target_mode)
         mlflow.log_param("train_window_days", train_window_days or "all_past")
         mlflow.log_param("feature_count", len(feature_cols))
+        prior_cfg = cfg.get("dispatch", {}).get("prior") or {}
+        prior_enabled = bool(prior_cfg.get("enabled", False))
+        mlflow.log_param("dispatch_prior_enabled", prior_enabled)
+        if prior_enabled:
+            mlflow.log_param(
+                "dispatch_prior_lambda_charge",
+                float(prior_cfg.get("lambda_charge", 0.0)),
+            )
+            mlflow.log_param(
+                "dispatch_prior_lambda_discharge",
+                float(prior_cfg.get("lambda_discharge", 0.0)),
+            )
+            mlflow.log_param("dispatch_prior_alpha", float(prior_cfg.get("alpha", 0.5)))
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
@@ -291,11 +347,22 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
             )
+            log_pc, log_pd, lc_w, ld_w = _maybe_build_prior(
+                cfg,
+                df,
+                time_col=time_col,
+                target_col=target_col,
+                train_end=train_end,
+            )
             dispatch_metrics = _evaluate_dispatch(
                 valid_df,
                 time_col=time_col,
                 target_col=target_col,
                 tau=float(cfg["dispatch"]["tau"]),
+                log_prior_charge=log_pc,
+                log_prior_discharge=log_pd,
+                lambda_charge=lc_w,
+                lambda_discharge=ld_w,
             )
 
             result = FoldResult(
@@ -396,12 +463,23 @@ def run_tau_search(cfg: dict, *, config_path: str) -> Path:
             )
             valid_df["pred"] = predict_model(model, valid_df, feature_cols, cfg)
 
+            log_pc, log_pd, lc_w, ld_w = _maybe_build_prior(
+                cfg,
+                df,
+                time_col=time_col,
+                target_col=target_col,
+                train_end=train_end,
+            )
             for tau in tau_values:
                 metrics = _evaluate_dispatch(
                     valid_df,
                     time_col=time_col,
                     target_col=target_col,
                     tau=tau,
+                    log_prior_charge=log_pc,
+                    log_prior_discharge=log_pd,
+                    lambda_charge=lc_w,
+                    lambda_discharge=ld_w,
                 )
                 rows.append(
                     {
@@ -564,6 +642,19 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
         mlflow.log_param("model", cfg["model"]["name"])
         mlflow.log_param("ensemble_members", ",".join(spec["model"]["name"] for spec in specs))
         mlflow.log_param("ensemble_weights", ",".join(str(w) for w in weights))
+        prior_cfg = cfg.get("dispatch", {}).get("prior") or {}
+        prior_enabled = bool(prior_cfg.get("enabled", False))
+        mlflow.log_param("dispatch_prior_enabled", prior_enabled)
+        if prior_enabled:
+            mlflow.log_param(
+                "dispatch_prior_lambda_charge",
+                float(prior_cfg.get("lambda_charge", 0.0)),
+            )
+            mlflow.log_param(
+                "dispatch_prior_lambda_discharge",
+                float(prior_cfg.get("lambda_discharge", 0.0)),
+            )
+            mlflow.log_param("dispatch_prior_alpha", float(prior_cfg.get("alpha", 0.5)))
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
@@ -609,11 +700,22 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
             )
+            log_pc, log_pd, lc_w, ld_w = _maybe_build_prior(
+                cfg,
+                raw_df,
+                time_col=time_col,
+                target_col=target_col,
+                train_end=pd.Timestamp(fold["train_end"]),
+            )
             dispatch_metrics = _evaluate_dispatch(
                 valid_df_for_eval,
                 time_col=time_col,
                 target_col=target_col,
                 tau=float(cfg["dispatch"]["tau"]),
+                log_prior_charge=log_pc,
+                log_prior_discharge=log_pd,
+                lambda_charge=lc_w,
+                lambda_discharge=ld_w,
             )
 
             result = FoldResult(

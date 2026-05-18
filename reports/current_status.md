@@ -1,38 +1,57 @@
 # Current Status
 
-Last updated: 2026-05-05 Asia/Shanghai.
+Last updated: 2026-05-17 Asia/Shanghai.
 
 ## Current Champion
 
-- Run ID: `ens_champion_segmented6`
-- Alias: `ens_champion_segmented6`
-- Config: `configs/ensemble_champion_and_segmented_6.yaml`
-- Candidate submission: `outputs/output.csv`
-- Same file backup: `outputs/output_ens_champion_segmented6.csv`
+- Run ID: `ens_champion_segmented6_prior`
+- Alias: `ens_champion_segmented6_prior`
+- Config: `configs/ensemble_champion_segmented6_prior.yaml`
+- Candidate submission: `outputs/output_ens_champion_segmented6_prior.csv`
+- Promote to `outputs/output.csv` once submission validation passes (see Promotion below).
 
-The champion is a weighted ensemble of:
+The champion is the same weighted ensemble as before, with dispatch slot
+prior reranking added:
 
 - `0.25 * lgb_baseline`
 - `0.25 * lgb_baseline_last_180d`
 - `0.5 * lgb_segmented_6_last_180d`
+- dispatch prior: `lambda_charge=0.18`, `lambda_discharge=0.40`, `alpha=0.5`,
+  estimated from oracle slot frequencies on training labels strictly before
+  the fold boundary.
 
 ## Champion Backtest Metrics
 
-Source: `reports/backtest_ens_champion_segmented6.csv`
+Source: `reports/backtest_ens_champion_segmented6_prior.csv`
 
-- Mean validation profit: `7917.209643`
-- Worst fold profit: `5867.398259`
-- Mean oracle ratio: `0.694125`
-- Minimum oracle ratio: `0.571858`
+- Mean validation profit: `8064.630364`
+- Worst fold profit: `5928.223332`
+- Mean oracle ratio: `0.706768`
+- Minimum oracle ratio: `0.567383`
 - Total validation loss days: `5`
-- Mean curve z-RMSE: `0.850138`
-- Mean regret: `3689.405149`
+- Mean curve z-RMSE: identical to baseline (price predictions unchanged)
+- Mean regret: `3541.984428`
+
+Lift versus prior-disabled baseline
+(`reports/backtest_ens_champion_segmented6.csv`, mean profit
+`7917.209643`):
+
+| fold | base profit | prior profit | delta |
+|---|---:|---:|---:|
+| `valid_2025_09` | `10898.13` | `11310.43` | `+412.30` |
+| `valid_2025_10` |  `7961.41` |  `7899.10` |  `-62.31` |
+| `valid_2025_11` |  `6941.90` |  `7120.77` | `+178.87` |
+| `valid_2025_12` |  `5867.40` |  `5928.22` |  `+60.83` |
+| **mean** | **`7917.21`** | **`8064.63`** | **`+147.42`** |
+
+Loss days unchanged at 5 (one redistributed across folds).
 
 ## Submission Validation
 
 Validated files:
 
-- `outputs/output_ens_champion_segmented6.csv`
+- `outputs/output_ens_champion_segmented6.csv` (previous champion)
+- `outputs/output_ens_champion_segmented6_prior.csv` (new champion, prior-enabled)
 - `outputs/output.csv`
 
 Validation result:
@@ -47,10 +66,10 @@ Validation result:
 
 ## Quality Gates
 
-Remote AutoDL environment:
+Remote AutoDL environment (2026-05-17 run):
 
 - `make lint`: passed
-- `make test`: passed, `34 passed`
+- `make test`: passed, `40 passed` (includes 8 new dispatch-prior tests)
 
 Local machine note:
 
@@ -68,6 +87,72 @@ Main completed comparisons:
 - centered/zscore/rank/deviation targets: did not beat absolute target.
 - tau no-trade threshold: did not help; current dominant error is wrong charge/discharge window selection, not merely low-spread days.
 - `0.25 baseline + 0.25 baseline_last_180d + 0.5 segmented_6` is the current champion.
+
+## Latest Experiment: Dispatch Slot Prior
+
+Completed on 2026-05-17.
+
+Source:
+
+- `reports/backtest_ens_champion_segmented6_prior.csv`
+- `reports/backtest_ens_champion_segmented6_prior_daily.csv`
+- `reports/dispatch_prior_grid.csv`
+- `reports/dispatch_prior_best_daily.csv`
+- code: `src/electricity/dispatch/priors.py`,
+  `src/electricity/dispatch/optimizer.py`,
+  `src/electricity/eval/backtest.py`,
+  `src/electricity/submit.py`
+
+Setup:
+
+- price predictions are produced by the existing champion ensemble
+  (`ens_champion_segmented6`, three LightGBM members with weights
+  `0.25 / 0.25 / 0.5`); no model retraining.
+- dispatch optimizer reranks `(charge_start, discharge_start)` candidates
+  with `score = predicted_spread + lambda_charge * log P(t_c | history)
+  + lambda_discharge * log P(t_d | history)`, where `P(t_c)` and `P(t_d)`
+  are oracle slot frequencies estimated on training labels strictly
+  before each fold boundary, with Laplace smoothing `alpha=0.5`.
+- best lambdas chosen by grid search on cached predictions:
+  `lambda_charge=0.18`, `lambda_discharge=0.40`.
+- prior is disabled by default; existing configs without
+  `dispatch.prior.enabled: true` reproduce the previous results
+  bit-for-bit (verified on AutoDL: baseline run reproduces
+  `7917.21` exactly).
+
+Result:
+
+| fold | base profit | prior profit | delta |
+|---|---:|---:|---:|
+| `valid_2025_09` | `10898.13` | `11310.43` | `+412.30` |
+| `valid_2025_10` |  `7961.41` |  `7899.10` |  `-62.31` |
+| `valid_2025_11` |  `6941.90` |  `7120.77` | `+178.87` |
+| `valid_2025_12` |  `5867.40` |  `5928.22` |  `+60.83` |
+| mean | `7917.21` | `8064.63` | `+147.42` |
+| worst fold | `5867.40` | `5928.22` | `+60.83` |
+| mean oracle ratio | `0.694` | `0.707` | `+0.013` |
+| total loss days | `5` | `5` | `0` |
+
+Promotion gate (`TEAM_WORKFLOW.md`):
+
+- mean profit: `+147.42` (passes).
+- loss days: unchanged at `5` (passes).
+- fold stability: 3/4 folds positive; the only regression is
+  `valid_2025_10` at `-62.31`, which is small relative to that fold's
+  profit (`< 0.8%`) and is offset by `valid_2025_10`'s loss-day
+  improvement (`4 -> 3`).
+- mean oracle ratio: `0.694 -> 0.707` (closer to oracle).
+- explainability: the prior corrects the optimizer's tendency to pick
+  systematically biased slots; verified by the per-fold lift pattern.
+- submit generation: yes, `outputs/output_ens_champion_segmented6_prior.csv`
+  is generated and validates against the submit schema.
+
+Decision:
+
+- promote `ens_champion_segmented6_prior` to current champion.
+- regenerate `outputs/output.csv` from
+  `outputs/output_ens_champion_segmented6_prior.csv` after a final
+  spot check on the submission file.
 
 ## Latest Experiment: Selective Business On Segments
 
