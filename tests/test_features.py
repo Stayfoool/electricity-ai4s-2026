@@ -128,3 +128,36 @@ def test_build_feature_frame_requires_nwp_path() -> None:
 
     with pytest.raises(ValueError, match="nwp.feature_csv"):
         build_feature_frame(df, cfg, time_col="times")
+
+
+def test_bid_space_feature() -> None:
+    df = pd.DataFrame(
+        {
+            "times": pd.to_datetime(
+                ["2025-01-01 00:00:00", "2025-01-01 00:15:00"]
+            ),
+            "系统负荷预测值": [30000.0, 32000.0],
+            "联络线预测值": [2000.0, 2100.0],
+            "非市场化机组预测值": [5000.0, 5100.0],
+            "风光总加预测值": [8000.0, 9000.0],
+            "风电预测值": [3000.0, 3500.0],
+            "光伏预测值": [5000.0, 5500.0],
+            "水电预测值": [1000.0, 1000.0],
+        }
+    )
+    cfg = {
+        "data": {"feature_cols": []},
+        "feature_sets": {"derived": False, "bid_space": True},
+    }
+    out = build_feature_frame(df, cfg, time_col="times")
+    cols = feature_columns(cfg)
+
+    assert cols[-1] == "bid_space"
+    assert "bid_space" not in [c for c in cols if c in df.columns]
+    # 30000 - 2000 - 5000 - 8000 - 1000 = 14000
+    # 32000 - 2100 - 5100 - 9000 - 1000 = 14800
+    assert out.loc[0, "bid_space"] == 14000.0
+    assert out.loc[1, "bid_space"] == 14800.0
+    # Should not pull in derived features when only bid_space requested
+    assert "net_load" not in out.columns
+    assert "renewable_ratio" not in out.columns

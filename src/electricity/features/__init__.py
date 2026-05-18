@@ -1,4 +1,5 @@
 from .time_features import (
+    BID_SPACE_FEATURES,
     BUSINESS_FEATURES,
     DERIVED_FEATURES,
     DEVIATION_FEATURES,
@@ -7,6 +8,7 @@ from .time_features import (
     NWP_INTERACTION_FEATURES,
     RANK_FEATURES,
     TIME_FEATURES,
+    add_bid_space_feature,
     add_derived_features,
     add_nwp_features,
     add_nwp_interaction_features,
@@ -17,6 +19,7 @@ from .time_features import (
 )
 
 __all__ = [
+    "BID_SPACE_FEATURES",
     "DERIVED_FEATURES",
     "BUSINESS_FEATURES",
     "DEVIATION_FEATURES",
@@ -25,6 +28,7 @@ __all__ = [
     "NWP_INTERACTION_FEATURES",
     "RANK_FEATURES",
     "TIME_FEATURES",
+    "add_bid_space_feature",
     "add_derived_features",
     "add_nwp_features",
     "add_nwp_interaction_features",

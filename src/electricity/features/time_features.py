@@ -42,6 +42,8 @@ RANK_FEATURES = [
     "wind_day_rank_pct",
 ]
 
+BID_SPACE_FEATURES = ["bid_space"]
+
 DERIVED_FEATURES = BUSINESS_FEATURES + DEVIATION_FEATURES + RANK_FEATURES
 
 NWP_FEATURES = [
@@ -247,9 +249,23 @@ def nwp_feature_columns(cfg: dict) -> list[str]:
     return columns
 
 
+def add_bid_space_feature(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    out["bid_space"] = (
+        out["系统负荷预测值"]
+        - out["联络线预测值"]
+        - out["非市场化机组预测值"]
+        - out["风光总加预测值"]
+        - out["水电预测值"]
+    )
+    return out
+
+
 def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     out = add_time_features(df, time_col=time_col)
     feature_sets = cfg.get("feature_sets", {})
+    if feature_sets.get("bid_space", False):
+        out = add_bid_space_feature(out)
     if selected_derived_features(feature_sets):
         out = add_derived_features(out, time_col=time_col)
     if feature_sets.get("nwp", False):
@@ -260,6 +276,8 @@ def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times")
 def feature_columns(cfg: dict) -> list[str]:
     columns = list(cfg["data"]["feature_cols"]) + TIME_FEATURES
     feature_sets = cfg.get("feature_sets", {})
+    if feature_sets.get("bid_space", False):
+        columns += BID_SPACE_FEATURES
     columns += selected_derived_features(feature_sets)
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
