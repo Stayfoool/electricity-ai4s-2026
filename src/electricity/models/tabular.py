@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from electricity.models.lgbm import predict_lgbm, train_lgbm, train_lgbm_full
+from electricity.models.linear import predict_linear, train_linear, train_linear_full
 
 
 def model_backend(cfg: dict) -> str:
@@ -13,6 +14,8 @@ def model_backend(cfg: dict) -> str:
     if backend:
         return str(backend)
     name = str(cfg["model"].get("name", ""))
+    if name.startswith("linear"):
+        return "linear"
     if name.startswith("xgb"):
         return "xgboost"
     if name.startswith("cat"):
@@ -53,6 +56,14 @@ def train_model(
             target_col=target_col,
             cfg=cfg,
         )
+    if backend == "linear":
+        return train_linear(
+            train_df,
+            valid_df,
+            feature_cols=feature_cols,
+            target_col=target_col,
+            cfg=cfg,
+        )
     raise ValueError(f"unsupported model backend={backend}")
 
 
@@ -80,6 +91,13 @@ def train_model_full(
             target_col=target_col,
             cfg=cfg,
         )
+    if backend == "linear":
+        return train_linear_full(
+            train_df,
+            feature_cols=feature_cols,
+            target_col=target_col,
+            cfg=cfg,
+        )
     raise ValueError(f"unsupported model backend={backend}")
 
 
@@ -91,11 +109,15 @@ def predict_model(model: Any, df: pd.DataFrame, feature_cols: list[str], cfg: di
         return _predict_xgboost(model, df, feature_cols)
     if backend == "catboost":
         return np.asarray(model.predict(df[feature_cols]), dtype=float)
+    if backend == "linear":
+        return predict_linear(model, df, feature_cols)
     raise ValueError(f"unsupported model backend={backend}")
 
 
 def best_iteration(model: Any, cfg: dict) -> int:
     backend = model_backend(cfg)
+    if backend == "linear":
+        return 0
     default = int(cfg["model"]["num_boost_round"])
     if backend == "lightgbm":
         return int(model.best_iteration or default)
