@@ -101,6 +101,8 @@ def _maybe_build_prior(
     time_col: str,
     target_col: str,
     train_end: pd.Timestamp,
+    valid_start: pd.Timestamp | None = None,
+    valid_end: pd.Timestamp | None = None,
 ) -> tuple[np.ndarray | None, np.ndarray | None, float, float]:
     """Return (log_prior_charge, log_prior_discharge, lambda_c, lambda_d).
 
@@ -116,8 +118,14 @@ def _maybe_build_prior(
     alpha = float(prior_cfg.get("alpha", 0.5))
     lambda_charge = float(prior_cfg.get("lambda_charge", 0.0))
     lambda_discharge = float(prior_cfg.get("lambda_discharge", 0.0))
+    prior_labels = labels[[time_col, target_col]]
+    if valid_start is not None and valid_end is not None:
+        outside = (prior_labels[time_col] < valid_start) | (
+            prior_labels[time_col] > valid_end
+        )
+        prior_labels = prior_labels[outside]
     log_pc, log_pd = build_dispatch_prior(
-        labels[[time_col, target_col]],
+        prior_labels,
         time_col=time_col,
         target_col=target_col,
         train_end=train_end,
@@ -257,11 +265,31 @@ def _fold_train_frame(
     time_col: str,
     train_end: pd.Timestamp,
     train_window_days: int | None,
+    train_start: pd.Timestamp | None = None,
+    valid_start: pd.Timestamp | None = None,
+    valid_end: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
+    """Build training frame for a fold.
+
+    Standard usage (forward time): only ``train_end`` is set; rows up to that
+    timestamp are used as training. ``train_window_days`` optionally clips an
+    earlier lower bound.
+
+    Same-season usage (e.g., predicting 2025-01/02 from 2025-Mar..Dec):
+    pass ``train_start`` to set an explicit lower bound and ``valid_start`` /
+    ``valid_end`` so the validation interval is excluded from training (which
+    is otherwise inside [train_start, train_end] when training "wraps around"
+    the validation period).
+    """
     train_df = df[df[time_col] <= train_end].copy()
-    if train_window_days is not None:
-        train_start = train_end - pd.Timedelta(days=train_window_days) + pd.Timedelta(seconds=1)
+    if train_start is not None:
         train_df = train_df[train_df[time_col] >= train_start].copy()
+    if train_window_days is not None:
+        window_start = train_end - pd.Timedelta(days=train_window_days) + pd.Timedelta(seconds=1)
+        train_df = train_df[train_df[time_col] >= window_start].copy()
+    if valid_start is not None and valid_end is not None:
+        outside = (train_df[time_col] < valid_start) | (train_df[time_col] > valid_end)
+        train_df = train_df[outside].copy()
     return train_df
 
 
@@ -353,6 +381,8 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=train_end,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             dispatch_metrics = _evaluate_dispatch(
                 valid_df,
@@ -469,6 +499,8 @@ def run_tau_search(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=train_end,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             for tau in tau_values:
                 metrics = _evaluate_dispatch(
@@ -552,12 +584,18 @@ def _predict_member_fold(
     train_end = pd.Timestamp(fold["train_end"])
     valid_start = pd.Timestamp(fold["valid_start"])
     valid_end = pd.Timestamp(fold["valid_end"])
+    fold_train_start = (
+        pd.Timestamp(fold["train_start"]) if fold.get("train_start") else None
+    )
 
     train_df = _fold_train_frame(
         frame,
         time_col=time_col,
         train_end=train_end,
         train_window_days=train_window_days,
+        train_start=fold_train_start,
+        valid_start=valid_start,
+        valid_end=valid_end,
     )
     valid_df = frame[(frame[time_col] >= valid_start) & (frame[time_col] <= valid_end)].copy()
     if train_df.empty or valid_df.empty:
@@ -706,6 +744,8 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=pd.Timestamp(fold["train_end"]),
+                valid_start=pd.Timestamp(fold["valid_start"]),
+                valid_end=pd.Timestamp(fold["valid_end"]),
             )
             dispatch_metrics = _evaluate_dispatch(
                 valid_df_for_eval,
