@@ -1,0 +1,4 @@
+label,days,price_mean,price_std,ren_share_mean,load_mean
+spring_festival_2025,8,0.611,0.525,0.342,2.862
+jan_feb_excl_sf,51,1.131,1.334,0.361,2.983
+mar_apr_2025,61,0.609,0.918,0.448,2.886
