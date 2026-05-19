@@ -44,7 +44,34 @@ RANK_FEATURES = [
 
 BID_SPACE_FEATURES = ["bid_space"]
 
+CAPACITY_FEATURES = [
+    "wind_utilization",
+    "solar_utilization",
+    "renewable_utilization",
+    "bid_space_local_dev",
+]
+
+HOLIDAY_FEATURES = [
+    "is_spring_festival",
+    "days_to_spring_festival",
+    "is_pre_spring_window",
+    "is_post_spring_window",
+]
+
 DERIVED_FEATURES = BUSINESS_FEATURES + DEVIATION_FEATURES + RANK_FEATURES
+
+# Spring Festival official holiday windows (除夕 to last day of holiday).
+# Used to compute holiday features that respect the lunar calendar shift.
+SPRING_FESTIVAL_WINDOWS: list[tuple[str, str]] = [
+    # 2024: Feb 9 (除夕) - Feb 17
+    ("2024-02-09", "2024-02-17"),
+    # 2025: Jan 28 (除夕) - Feb 4
+    ("2025-01-28", "2025-02-04"),
+    # 2026: Feb 17 (除夕) - Feb 23
+    ("2026-02-17", "2026-02-23"),
+    # 2027: Feb 6 (除夕) - Feb 12 (anchor for future years)
+    ("2027-02-06", "2027-02-12"),
+]
 
 NWP_FEATURES = [
     "nwp_ghi_mean",
@@ -261,6 +288,120 @@ def add_bid_space_feature(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def add_capacity_features(
+    df: pd.DataFrame,
+    *,
+    time_col: str = "times",
+    window_days: int = 30,
+) -> pd.DataFrame:
+    """Add capacity-normalized utilization features.
+
+    Rationale: train data is 2025, test is 2026-01/02 where wind+solar
+    installed capacity is roughly +30%. Raw forecast values shift up by
+    that amount; the model overestimates renewable scarcity. Normalizing
+    by a rolling-window capacity proxy makes the features invariant to
+    the absolute capacity level.
+
+    Computation must be done on a frame that includes BOTH train and test
+    sorted by ``time_col`` so the rolling window can look backward from
+    test rows into the training tail.
+    """
+    out = df.sort_values(time_col).reset_index(drop=True).copy()
+    n = len(out)
+    if n == 0:
+        return out
+
+    # 96 slots per day; window in slots.
+    window_slots = int(window_days * 96)
+    min_window = min(int(7 * 96), window_slots)
+
+    # Capacity proxy = rolling p99 (close to max but robust to outliers).
+    def _rolling_q99(series: pd.Series) -> pd.Series:
+        return series.rolling(window=window_slots, min_periods=min_window).quantile(0.99)
+
+    wind_cap = _rolling_q99(out["风电预测值"])
+    solar_cap = _rolling_q99(out["光伏预测值"])
+    total_cap = _rolling_q99(out["风光总加预测值"])
+
+    # For early rows (before min_window), fall back to expanding p99 from the start
+    # to avoid NaNs that LightGBM may treat oddly.
+    wind_exp = out["风电预测值"].expanding(min_periods=1).quantile(0.99)
+    solar_exp = out["光伏预测值"].expanding(min_periods=1).quantile(0.99)
+    total_exp = out["风光总加预测值"].expanding(min_periods=1).quantile(0.99)
+    wind_cap = wind_cap.fillna(wind_exp)
+    solar_cap = solar_cap.fillna(solar_exp)
+    total_cap = total_cap.fillna(total_exp)
+
+    eps = 1e-3
+    out["wind_utilization"] = out["风电预测值"] / wind_cap.clip(lower=eps)
+    out["solar_utilization"] = out["光伏预测值"] / solar_cap.clip(lower=eps)
+    out["renewable_utilization"] = out["风光总加预测值"] / total_cap.clip(lower=eps)
+
+    # bid_space local deviation: bid_space minus its rolling mean over the same
+    # window. Captures how the current row compares to the *recent* baseline,
+    # which is invariant to long-run capacity shifts.
+    if "bid_space" not in out.columns:
+        out = add_bid_space_feature(out)
+    bid_mean = (
+        out["bid_space"]
+        .rolling(window=window_slots, min_periods=min_window)
+        .mean()
+    )
+    bid_mean = bid_mean.fillna(out["bid_space"].expanding(min_periods=1).mean())
+    out["bid_space_local_dev"] = out["bid_space"] - bid_mean
+
+    return out
+
+
+def _nearest_spring_festival_eve(timestamps: pd.Series) -> pd.Series:
+    """Return the nearest Spring Festival 除夕 date for each timestamp."""
+    eves = pd.to_datetime([start for start, _ in SPRING_FESTIVAL_WINDOWS])
+    eve_values = eves.to_numpy()
+    ts = timestamps.dt.normalize().to_numpy()
+    # For each timestamp pick eve minimizing |ts - eve|.
+    diffs = np.abs(ts[:, None] - eve_values[None, :])
+    idx = diffs.argmin(axis=1)
+    return pd.Series(eve_values[idx], index=timestamps.index)
+
+
+def add_holiday_features(
+    df: pd.DataFrame,
+    *,
+    time_col: str = "times",
+    pre_post_window_days: int = 3,
+) -> pd.DataFrame:
+    """Add Spring Festival aware holiday features.
+
+    The Lunar New Year date shifts each year (2025 Jan 28, 2026 Feb 17, etc.),
+    so a model that only sees Gregorian time features cannot generalize from
+    training 2025 Spring Festival to predicting 2026 Spring Festival. These
+    features encode festival proximity in a year-invariant way.
+    """
+    out = df.copy()
+    ts = out[time_col]
+    eves = _nearest_spring_festival_eve(ts)
+    day_diff = (ts.dt.normalize() - eves).dt.days
+    out["days_to_spring_festival"] = day_diff.astype(int)
+
+    in_window = pd.Series(False, index=out.index)
+    for start, end in SPRING_FESTIVAL_WINDOWS:
+        mask = (ts >= pd.Timestamp(start)) & (ts < pd.Timestamp(end) + pd.Timedelta(days=1))
+        in_window = in_window | mask
+    out["is_spring_festival"] = in_window.astype(int)
+
+    pre_window = (day_diff >= -pre_post_window_days) & (day_diff < 0)
+    out["is_pre_spring_window"] = pre_window.astype(int)
+
+    # Find the holiday-end day for each row's nearest eve to define post-window.
+    eve_to_end = {pd.Timestamp(s): pd.Timestamp(e) for s, e in SPRING_FESTIVAL_WINDOWS}
+    ends = eves.map(eve_to_end)
+    end_diff = (ts.dt.normalize() - ends).dt.days
+    post_window = (end_diff > 0) & (end_diff <= pre_post_window_days)
+    out["is_post_spring_window"] = post_window.astype(int)
+
+    return out
+
+
 def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     out = add_time_features(df, time_col=time_col)
     feature_sets = cfg.get("feature_sets", {})
@@ -268,6 +409,10 @@ def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times")
         out = add_bid_space_feature(out)
     if selected_derived_features(feature_sets):
         out = add_derived_features(out, time_col=time_col)
+    if feature_sets.get("capacity", False):
+        out = add_capacity_features(out, time_col=time_col)
+    if feature_sets.get("holiday", False):
+        out = add_holiday_features(out, time_col=time_col)
     if feature_sets.get("nwp", False):
         out = add_nwp_features(out, cfg, time_col=time_col)
     return out
@@ -279,6 +424,10 @@ def feature_columns(cfg: dict) -> list[str]:
     if feature_sets.get("bid_space", False):
         columns += BID_SPACE_FEATURES
     columns += selected_derived_features(feature_sets)
+    if feature_sets.get("capacity", False):
+        columns += CAPACITY_FEATURES
+    if feature_sets.get("holiday", False):
+        columns += HOLIDAY_FEATURES
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
     return columns

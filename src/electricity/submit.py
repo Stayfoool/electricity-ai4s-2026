@@ -91,6 +91,31 @@ def build_power_schedule(
     return power
 
 
+def _build_features_train_test(
+    raw_train: pd.DataFrame,
+    raw_test: pd.DataFrame,
+    build_spec: dict,
+    *,
+    time_col: str,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Build features on the concatenated train+test frame and split back.
+
+    Required so that rolling features (e.g. capacity utilization) computed for
+    test rows can look back into the training tail. Train and test are
+    distinguished by an ``__is_test`` indicator that is dropped before return.
+    """
+    train_marked = raw_train.copy()
+    test_marked = raw_test.copy()
+    train_marked["__is_test"] = 0
+    test_marked["__is_test"] = 1
+    combined = pd.concat([train_marked, test_marked], ignore_index=True)
+    combined = combined.sort_values(time_col).reset_index(drop=True)
+    feat = build_feature_frame(combined, build_spec, time_col=time_col)
+    train_feat = feat[feat["__is_test"] == 0].drop(columns="__is_test").reset_index(drop=True)
+    test_feat = feat[feat["__is_test"] == 1].drop(columns="__is_test").reset_index(drop=True)
+    return train_feat, test_feat
+
+
 def _member_train_frame(df: pd.DataFrame, spec: dict, *, time_col: str) -> pd.DataFrame:
     train_window_days = spec["model"].get("train_window_days")
     if train_window_days is None:
@@ -244,9 +269,11 @@ def run_submit(cfg: dict, *, config_path: str) -> Path:
 
     print("loading_train", flush=True)
     raw_train = load_train_frame(cfg)
-    train_df = build_feature_frame(raw_train, build_spec, time_col=time_col)
+    raw_test = load_test_frame(cfg)
     print("predicting_test", flush=True)
-    test_df = build_feature_frame(load_test_frame(cfg), build_spec, time_col=time_col)
+    train_df, test_df = _build_features_train_test(
+        raw_train, raw_test, build_spec, time_col=time_col
+    )
     print("training_full_model", flush=True)
     test_df["实时价格"] = _predict_full_model(
         train_df,
@@ -311,9 +338,10 @@ def run_ensemble_submit(cfg: dict, *, config_path: str) -> Path:
     for spec in specs:
         build_spec = segmented_feature_build_spec(spec)
         feature_cols = feature_columns(build_spec)
-        train_df = build_feature_frame(raw_train, build_spec, time_col=time_col)
+        train_df, test_df = _build_features_train_test(
+            raw_train, raw_test, build_spec, time_col=time_col
+        )
         train_df = _member_train_frame(train_df, spec, time_col=time_col)
-        test_df = build_feature_frame(raw_test, build_spec, time_col=time_col)
 
         actual_train_start = train_df[time_col].min().strftime("%Y-%m-%d")
         actual_train_end = train_df[time_col].max().strftime("%Y-%m-%d")
