@@ -140,6 +140,7 @@ def apply_bias_correction(
     time_col: str = "times",
     shrink: float = 1.0,
     add_net_load: bool = True,
+    mode: str = "augment",
 ) -> pd.DataFrame:
     """Add ``<channel>预测值_debiased`` columns and optional net-load features.
 
@@ -169,6 +170,9 @@ def apply_bias_correction(
     out["__hour"] = times.dt.hour
     out["__month"] = times.dt.month
 
+    if mode not in ("augment", "replace"):
+        raise ValueError(f"mode must be 'augment' or 'replace', got {mode!r}")
+
     debiased_cols: dict[str, np.ndarray] = {}
     for channel in bias_table["channel"].unique():
         sub = (
@@ -179,22 +183,34 @@ def apply_bias_correction(
         forecast_values = merged[f"{channel}预测值"].to_numpy()
         bias_values = merged["bias"].fillna(0.0).to_numpy()
         debiased = forecast_values - shrink * bias_values
-        col = f"{channel}预测值_debiased"
-        out[col] = debiased
         debiased_cols[channel] = debiased
+        if mode == "augment":
+            out[f"{channel}预测值_debiased"] = debiased
+        else:  # replace
+            out[f"{channel}预测值"] = debiased
 
     if add_net_load:
         # net_load = 系统负荷 - 风光 - 水电 - 非市场化 - 联络线 (EDA-correct definition)
         load = out["系统负荷预测值"].to_numpy()
-        ren = out["风光总加预测值"].to_numpy()
+        ren_raw = (
+            df["风光总加预测值"].to_numpy() if mode == "replace" else out["风光总加预测值"].to_numpy()
+        )
+        non_mkt_raw = (
+            df["非市场化机组预测值"].to_numpy()
+            if mode == "replace"
+            else out["非市场化机组预测值"].to_numpy()
+        )
         hydro = out["水电预测值"].to_numpy()
-        non_mkt = out["非市场化机组预测值"].to_numpy()
         tie = out["联络线预测值"].to_numpy()
-        out["net_load_fct_explicit"] = load - ren - hydro - non_mkt - tie
 
-        ren_db = debiased_cols.get("风光总加", ren)
-        non_mkt_db = debiased_cols.get("非市场化机组", non_mkt)
-        out["net_load_fct_debiased"] = load - ren_db - hydro - non_mkt_db - tie
+        ren_db = debiased_cols.get("风光总加", ren_raw)
+        non_mkt_db = debiased_cols.get("非市场化机组", non_mkt_raw)
+
+        if mode == "augment":
+            out["net_load_fct_explicit"] = load - ren_raw - hydro - non_mkt_raw - tie
+            out["net_load_fct_debiased"] = load - ren_db - hydro - non_mkt_db - tie
+        else:  # replace: only one consolidated column
+            out["net_load_fct"] = load - ren_db - hydro - non_mkt_db - tie
 
     return out.drop(columns=["__hour", "__month"])
 
@@ -231,6 +247,7 @@ def add_bias_correction_features(
     remove_daily_mean = bool(bc_cfg.get("remove_daily_mean", True))
     min_samples = int(bc_cfg.get("min_samples_per_bucket", 5))
     add_net_load = bool(bc_cfg.get("add_net_load", True))
+    mode = str(bc_cfg.get("mode", "augment"))
 
     table = fit_bias_table(
         df,
@@ -246,6 +263,7 @@ def add_bias_correction_features(
         time_col=time_col,
         shrink=shrink,
         add_net_load=add_net_load,
+        mode=mode,
     )
 
 
@@ -268,6 +286,8 @@ def apply_fold_bias_correction(
 
     drop_cols = [c for c in BIAS_CORRECTED_FORECAST_COLUMNS if c in frame.columns]
     drop_cols += [c for c in NET_LOAD_FEATURES if c in frame.columns]
+    if "net_load_fct" in frame.columns:
+        drop_cols.append("net_load_fct")
     work = frame.drop(columns=drop_cols) if drop_cols else frame.copy()
     return add_bias_correction_features(work, spec, time_col=time_col, train_end=train_end)
 
@@ -281,6 +301,12 @@ def bias_correction_feature_columns(cfg: dict) -> list[str]:
     bc_cfg = cfg.get("bias_correction", {}) or {}
     channels: Iterable[str] = bc_cfg.get("channels", CORRECTABLE_CHANNELS)
     add_net_load = bool(bc_cfg.get("add_net_load", True))
+    mode = str(bc_cfg.get("mode", "augment"))
+
+    if mode == "replace":
+        # Replace mode keeps original forecast names (already in feature_cols);
+        # only the net_load column is new.
+        return ["net_load_fct"] if add_net_load else []
 
     columns = [f"{c}预测值_debiased" for c in channels]
     if add_net_load:

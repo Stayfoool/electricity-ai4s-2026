@@ -1,0 +1,220 @@
+project:
+  name: electricity
+  root: /root/autodl-tmp/electricity
+  mode: warn
+paths:
+  material_dir: eletricmaterial
+  data_zip: eletricmaterial/to_sais_new.zip
+  output_demo: eletricmaterial/output_demo.csv
+  artifacts_dir: artifacts
+  reports_dir: reports
+  outputs_dir: outputs
+  mlruns_dir: mlruns
+data:
+  train_feature: to_sais_new/train/mengxi_boundary_anon_filtered.csv
+  train_label: to_sais_new/train/mengxi_node_price_selected.csv
+  test_feature: to_sais_new/test/test_in_feature_ori.csv
+  time_col: times
+  target_col: A
+  feature_cols:
+  - 系统负荷预测值
+  - 风光总加预测值
+  - 联络线预测值
+  - 风电预测值
+  - 光伏预测值
+  - 水电预测值
+  - 非市场化机组预测值
+folds:
+- name: valid_2025_09
+  train_end: '2025-08-31 23:59:59'
+  valid_start: '2025-09-01 00:00:00'
+  valid_end: '2025-09-30 23:59:59'
+- name: valid_2025_10
+  train_end: '2025-09-30 23:59:59'
+  valid_start: '2025-10-01 00:00:00'
+  valid_end: '2025-10-31 23:59:59'
+- name: valid_2025_11
+  train_end: '2025-10-31 23:59:59'
+  valid_start: '2025-11-01 00:00:00'
+  valid_end: '2025-11-30 23:59:59'
+- name: valid_2025_12
+  train_end: '2025-11-30 23:59:59'
+  valid_start: '2025-12-01 00:00:00'
+  valid_end: '2025-12-31 23:59:59'
+- name: valid_2025_jan_feb
+  train_start: '2025-03-01 00:00:00'
+  train_end: '2025-12-31 23:59:59'
+  valid_start: '2025-01-01 00:00:00'
+  valid_end: '2025-02-28 23:59:59'
+dispatch:
+  charge_power: -1000
+  discharge_power: 1000
+  block_size: 8
+  points_per_day: 96
+  charge_start_min: 0
+  charge_start_max: 80
+  discharge_start_max: 88
+  tau: 0.0
+  tau_grid:
+    start: 0.0
+    stop: 20.0
+    step: 0.5
+  prior:
+    enabled: true
+    lambda_charge: 0.18
+    lambda_discharge: 0.40
+    alpha: 0.5
+model:
+  name: ens_champion_segmented6_prior_replace_features_5fold
+  target_mode: ensemble
+bias_correction:
+  channels: [风光总加, 风电, 光伏, 非市场化机组]
+  shrink: 1.0
+  remove_daily_mean: true
+  min_samples_per_bucket: 5
+  add_net_load: true
+  mode: replace
+ensemble:
+  members:
+  - data:
+      train_feature: to_sais_new/train/mengxi_boundary_anon_filtered.csv
+      train_label: to_sais_new/train/mengxi_node_price_selected.csv
+      test_feature: to_sais_new/test/test_in_feature_ori.csv
+      time_col: times
+      target_col: A
+      feature_cols:
+      - 系统负荷预测值
+      - 风光总加预测值
+      - 联络线预测值
+      - 风电预测值
+      - 光伏预测值
+      - 水电预测值
+      - 非市场化机组预测值
+    feature_sets:
+      derived: false
+      bias_correction: true
+    bias_correction:
+      channels: [风光总加, 风电, 光伏, 非市场化机组]
+      shrink: 1.0
+      remove_daily_mean: true
+      add_net_load: true
+      mode: replace
+    model:
+      name: lgb_baseline_replace
+      target_mode: absolute
+      params:
+        objective: huber
+        metric: l2
+        learning_rate: 0.03
+        num_leaves: 63
+        feature_fraction: 0.8
+        bagging_fraction: 0.8
+        bagging_freq: 1
+        min_data_in_leaf: 100
+        lambda_l2: 1.0
+        num_threads: 4
+        force_col_wise: true
+        deterministic: true
+        seed: 2026
+        verbosity: -1
+      num_boost_round: 500
+      early_stopping_rounds: 50
+    weight: 0.25
+  - data:
+      train_feature: to_sais_new/train/mengxi_boundary_anon_filtered.csv
+      train_label: to_sais_new/train/mengxi_node_price_selected.csv
+      test_feature: to_sais_new/test/test_in_feature_ori.csv
+      time_col: times
+      target_col: A
+      feature_cols:
+      - 系统负荷预测值
+      - 风光总加预测值
+      - 联络线预测值
+      - 风电预测值
+      - 光伏预测值
+      - 水电预测值
+      - 非市场化机组预测值
+    feature_sets:
+      derived: false
+      bias_correction: true
+    bias_correction:
+      channels: [风光总加, 风电, 光伏, 非市场化机组]
+      shrink: 1.0
+      remove_daily_mean: true
+      add_net_load: true
+      mode: replace
+    model:
+      name: lgb_baseline_last_180d_replace
+      target_mode: absolute
+      train_window_days: 180
+      params:
+        objective: huber
+        metric: l2
+        learning_rate: 0.03
+        num_leaves: 63
+        feature_fraction: 0.8
+        bagging_fraction: 0.8
+        bagging_freq: 1
+        min_data_in_leaf: 100
+        lambda_l2: 1.0
+        num_threads: 4
+        force_col_wise: true
+        deterministic: true
+        seed: 2026
+        verbosity: -1
+      num_boost_round: 500
+      early_stopping_rounds: 50
+    weight: 0.25
+  - data:
+      train_feature: to_sais_new/train/mengxi_boundary_anon_filtered.csv
+      train_label: to_sais_new/train/mengxi_node_price_selected.csv
+      test_feature: to_sais_new/test/test_in_feature_ori.csv
+      time_col: times
+      target_col: A
+      feature_cols:
+      - 系统负荷预测值
+      - 风光总加预测值
+      - 联络线预测值
+      - 风电预测值
+      - 光伏预测值
+      - 水电预测值
+      - 非市场化机组预测值
+    feature_sets:
+      derived: false
+      bias_correction: true
+    bias_correction:
+      channels: [风光总加, 风电, 光伏, 非市场化机组]
+      shrink: 1.0
+      remove_daily_mean: true
+      add_net_load: true
+      mode: replace
+    model:
+      name: lgb_segmented_6_last_180d_replace
+      target_mode: absolute
+      train_window_days: 180
+      segment_boundaries:
+      - 0
+      - 24
+      - 40
+      - 56
+      - 72
+      - 88
+      - 96
+      params:
+        objective: huber
+        metric: l2
+        learning_rate: 0.03
+        num_leaves: 63
+        feature_fraction: 0.8
+        bagging_fraction: 0.8
+        bagging_freq: 1
+        min_data_in_leaf: 100
+        lambda_l2: 1.0
+        num_threads: 4
+        force_col_wise: true
+        deterministic: true
+        seed: 2026
+        verbosity: -1
+      num_boost_round: 500
+      early_stopping_rounds: 50
+    weight: 0.5
