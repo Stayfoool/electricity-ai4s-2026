@@ -430,4 +430,9 @@ def feature_columns(cfg: dict) -> list[str]:
         columns += HOLIDAY_FEATURES
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
+    if feature_sets.get("bias_correction", False):
+        # Imported lazily to avoid cycles.
+        from electricity.features.bias_correction import bias_correction_feature_columns
+
+        columns += bias_correction_feature_columns(cfg)
     return columns

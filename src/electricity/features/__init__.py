@@ -1,3 +1,13 @@
+from .bias_correction import (
+    BIAS_CORRECTED_FORECAST_COLUMNS,
+    CORRECTABLE_CHANNELS,
+    NET_LOAD_FEATURES,
+    add_bias_correction_features,
+    apply_bias_correction,
+    apply_fold_bias_correction,
+    bias_correction_feature_columns,
+    fit_bias_table,
+)
 from .time_features import (
     BID_SPACE_FEATURES,
     BUSINESS_FEATURES,
@@ -23,17 +33,21 @@ from .time_features import (
 )
 
 __all__ = [
+    "BIAS_CORRECTED_FORECAST_COLUMNS",
     "BID_SPACE_FEATURES",
-    "DERIVED_FEATURES",
     "BUSINESS_FEATURES",
     "CAPACITY_FEATURES",
+    "CORRECTABLE_CHANNELS",
+    "DERIVED_FEATURES",
     "DEVIATION_FEATURES",
     "HOLIDAY_FEATURES",
-    "NWP_FEATURES",
+    "NET_LOAD_FEATURES",
     "NWP_CORE_FEATURES",
+    "NWP_FEATURES",
     "NWP_INTERACTION_FEATURES",
     "RANK_FEATURES",
     "TIME_FEATURES",
+    "add_bias_correction_features",
     "add_bid_space_feature",
     "add_capacity_features",
     "add_derived_features",
@@ -41,7 +55,11 @@ __all__ = [
     "add_nwp_features",
     "add_nwp_interaction_features",
     "add_time_features",
+    "apply_bias_correction",
+    "apply_fold_bias_correction",
+    "bias_correction_feature_columns",
     "build_feature_frame",
     "feature_columns",
+    "fit_bias_table",
     "nwp_feature_columns",
 ]

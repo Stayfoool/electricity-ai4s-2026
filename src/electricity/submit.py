@@ -13,7 +13,11 @@ from electricity.eval.segmented_utils import (
     segmented_feature_build_spec,
     segmented_feature_columns,
 )
-from electricity.features import build_feature_frame, feature_columns
+from electricity.features import (
+    apply_fold_bias_correction,
+    build_feature_frame,
+    feature_columns,
+)
 from electricity.models import predict_model, train_model_full
 
 SUBMIT_COLUMNS = ["times", "实时价格", "power"]
@@ -103,6 +107,10 @@ def _build_features_train_test(
     Required so that rolling features (e.g. capacity utilization) computed for
     test rows can look back into the training tail. Train and test are
     distinguished by an ``__is_test`` indicator that is dropped before return.
+
+    Bias correction (when enabled in ``build_spec['feature_sets']``) is fitted
+    on the training tail (``time <= max train time``) only, then applied to
+    both train and test rows.
     """
     train_marked = raw_train.copy()
     test_marked = raw_test.copy()
@@ -111,6 +119,10 @@ def _build_features_train_test(
     combined = pd.concat([train_marked, test_marked], ignore_index=True)
     combined = combined.sort_values(time_col).reset_index(drop=True)
     feat = build_feature_frame(combined, build_spec, time_col=time_col)
+    train_end = raw_train[time_col].max()
+    feat = apply_fold_bias_correction(
+        feat, build_spec, time_col=time_col, train_end=train_end
+    )
     train_feat = feat[feat["__is_test"] == 0].drop(columns="__is_test").reset_index(drop=True)
     test_feat = feat[feat["__is_test"] == 1].drop(columns="__is_test").reset_index(drop=True)
     return train_feat, test_feat

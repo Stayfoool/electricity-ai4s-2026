@@ -24,7 +24,11 @@ from electricity.eval.segmented_utils import (
     segmented_feature_build_spec,
     segmented_feature_columns,
 )
-from electricity.features import build_feature_frame, feature_columns
+from electricity.features import (
+    apply_fold_bias_correction,
+    build_feature_frame,
+    feature_columns,
+)
 
 
 def run_segmented_backtest(cfg: dict, *, config_path: str) -> Path:
@@ -70,13 +74,18 @@ def run_segmented_backtest(cfg: dict, *, config_path: str) -> Path:
             valid_start = pd.Timestamp(fold["valid_start"])
             valid_end = pd.Timestamp(fold["valid_end"])
 
+            fold_df = apply_fold_bias_correction(
+                df, build_spec, time_col=time_col, train_end=train_end
+            )
             train_df = _fold_train_frame(
-                df,
+                fold_df,
                 time_col=time_col,
                 train_end=train_end,
                 train_window_days=train_window_days,
             )
-            valid_df = df[(df[time_col] >= valid_start) & (df[time_col] <= valid_end)].copy()
+            valid_df = fold_df[
+                (fold_df[time_col] >= valid_start) & (fold_df[time_col] <= valid_end)
+            ].copy()
             valid_df = valid_df.reset_index(drop=True)
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
