@@ -37,3 +37,4 @@ outputs/cache/
 # Derived weather diagnostics caches
 reports/weather_hourly_spatial_features.csv
 reports/weather_renewable_joined_hourly.csv
+reports/weather_renewable_correction_predictions.csv

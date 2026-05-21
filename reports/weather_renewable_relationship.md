@@ -240,13 +240,8 @@ This is stricter: both weather features and renewable error are residualized by 
 
 ## Artifacts
 
-Tracked report artifacts:
-
+- `reports/weather_hourly_spatial_features.csv`
+- `reports/weather_renewable_joined_hourly.csv`
 - `reports/weather_renewable_corr.csv`
 - `reports/weather_renewable_residual_corr.csv`
 - `reports/weather_renewable_month_segment.csv`
-
-Local cache artifacts, intentionally ignored by Git:
-
-- `reports/weather_hourly_spatial_features.csv`
-- `reports/weather_renewable_joined_hourly.csv`
