@@ -1,0 +1,5 @@
+heldout_fold,top_k,gamma,threshold,train_mean_profit,train_loss_days,train_changed_days
+valid_2025_09,3,0.05,0.0,6987.075617585538,4,2
+valid_2025_10,3,0.05,0.0,8029.558924807779,1,2
+valid_2025_11,3,0.05,0.0,8287.554939465927,4,2
+valid_2025_12,3,0.1,0.0,8710.683346802705,3,1
