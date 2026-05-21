@@ -8,8 +8,11 @@ Sections:
   E Oracle dispatch difficulty
   F Conclusions
 """
-import json, nbformat as nbf
+
+# ruff: noqa: E501
 from pathlib import Path
+
+import nbformat as nbf
 
 nb = nbf.v4.new_notebook()
 cells = []

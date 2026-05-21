@@ -349,8 +349,10 @@ def write_markdown(
         "",
         "Definitions:",
         "",
-        "- `bid_space_fct = 系统负荷预测值 - 风光总加预测值 - 联络线预测值 - 水电预测值 - 非市场化机组预测值`.",
-        "- `bid_space_act = 系统负荷实际值 - 风光总加实际值 - 联络线实际值 - 水电实际值 - 非市场化机组实际值`.",
+        "- `bid_space_fct = 系统负荷预测值 - 风光总加预测值 - 联络线预测值 "
+        "- 水电预测值 - 非市场化机组预测值`.",
+        "- `bid_space_act = 系统负荷实际值 - 风光总加实际值 - 联络线实际值 "
+        "- 水电实际值 - 非市场化机组实际值`.",
         "- Window metrics use 8-slot / 2-hour rolling means, matching the storage "
         "block constraint.",
         "",

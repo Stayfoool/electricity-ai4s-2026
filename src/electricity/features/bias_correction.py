@@ -26,7 +26,7 @@ Notes
 
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 import numpy as np
 import pandas as pd
@@ -192,9 +192,10 @@ def apply_bias_correction(
     if add_net_load:
         # net_load = 系统负荷 - 风光 - 水电 - 非市场化 - 联络线 (EDA-correct definition)
         load = out["系统负荷预测值"].to_numpy()
-        ren_raw = (
-            df["风光总加预测值"].to_numpy() if mode == "replace" else out["风光总加预测值"].to_numpy()
-        )
+        if mode == "replace":
+            ren_raw = df["风光总加预测值"].to_numpy()
+        else:
+            ren_raw = out["风光总加预测值"].to_numpy()
         non_mkt_raw = (
             df["非市场化机组预测值"].to_numpy()
             if mode == "replace"
