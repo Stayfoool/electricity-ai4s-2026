@@ -1,6 +1,48 @@
 # Current Status
 
-Last updated: 2026-05-17 Asia/Shanghai.
+Last updated: 2026-05-21 Asia/Shanghai.
+
+
+## Latest Update: Bid Space Diagnostics
+
+Completed on 2026-05-21.
+
+Artifacts:
+
+- `scripts/analyze_bid_space_diagnostics.py`
+- `reports/bid_space_diagnostics.md`
+- `reports/bid_space_point_stats.csv`
+- `reports/bid_space_price_bins.csv`
+- `reports/bid_space_window_stats.csv`
+- `reports/bid_space_daily_dispatch.csv`
+- `reports/bid_space_daily_summary.csv`
+- `reports/bid_space_vs_price_bins.png`
+- `reports/bid_space_error_by_hour.png`
+- `reports/bid_space_window_rank_vs_profit.png`
+
+Setup:
+
+- Uses 2025 labelled training data only.
+- `bid_space_fct = 系统负荷预测值 - 风光总加预测值 - 联络线预测值 - 水电预测值 - 非市场化机组预测值`.
+- `bid_space_act = 系统负荷实际值 - 风光总加实际值 - 联络线实际值 - 水电实际值 - 非市场化机组实际值`.
+- Window diagnostics use 8-slot / 2-hour rolling means, matching the storage block constraint.
+
+Main findings:
+
+| metric | forecast bid space | actual bid space | interpretation |
+|---|---:|---:|---|
+| point Spearman vs price | `0.7606` | `0.8360` | actual bid space is a stronger price signal |
+| window Spearman vs price | `0.6478` | `0.7404` | forecast error hurts window ranking |
+| direct pair profit mean | `7684.70` | `8653.16` | actual bid space improves dispatch but is still below oracle |
+| window oracle profit mean | `12619.53` | `12619.53` | price-window oracle remains far higher |
+| loss days from pair | `35` | `23` | actual bid space reduces bad days but does not solve them |
+
+Decision:
+
+- Keep `bid_space` as a diagnostic / auxiliary business feature, not as a direct dispatch replacement.
+- The gap from forecast to actual bid space confirms boundary forecast error is material.
+- The remaining gap from actual bid space to price-window oracle means bid space alone misses price drivers; the price model remains necessary.
+- Next useful direction is targeted feature/diagnostic work around months with weak window ranking, especially May-August and October, rather than promoting bid-space-only models.
 
 ## Current Champion
 
