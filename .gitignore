@@ -33,3 +33,7 @@ papers_txt/
 # Keep reports/configs in Git; selected output CSVs may be committed intentionally.
 outputs/tmp/
 outputs/cache/
+
+# Derived weather diagnostics caches
+reports/weather_hourly_spatial_features.csv
+reports/weather_renewable_joined_hourly.csv
