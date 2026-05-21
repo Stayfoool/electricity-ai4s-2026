@@ -14,9 +14,16 @@ def train_lgbm(
     cfg: dict,
 ) -> lgb.Booster:
     params = dict(cfg["model"]["params"])
+    weight_col = cfg["model"].get("sample_weight_col")
+    train_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
     train_set = lgb.Dataset(
         train_df[feature_cols],
         label=train_df[target_col].to_numpy(),
+        weight=train_weight,
         feature_name=feature_cols,
     )
     valid_set = lgb.Dataset(
@@ -46,9 +53,16 @@ def train_lgbm_full(
     cfg: dict,
 ) -> lgb.Booster:
     params = dict(cfg["model"]["params"])
+    weight_col = cfg["model"].get("sample_weight_col")
+    train_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
     train_set = lgb.Dataset(
         train_df[feature_cols],
         label=train_df[target_col].to_numpy(),
+        weight=train_weight,
         feature_name=feature_cols,
     )
     return lgb.train(

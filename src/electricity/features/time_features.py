@@ -44,6 +44,18 @@ RANK_FEATURES = [
 
 BID_SPACE_FEATURES = ["bid_space"]
 
+DEFAULT_LAG_BASE_COLUMNS = [
+    "系统负荷预测值",
+    "风光总加预测值",
+    "联络线预测值",
+    "风电预测值",
+    "光伏预测值",
+    "水电预测值",
+    "非市场化机组预测值",
+    "bid_space",
+]
+
+
 CAPACITY_FEATURES = [
     "wind_utilization",
     "solar_utilization",
@@ -288,6 +300,50 @@ def add_bid_space_feature(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def lag_feature_columns(cfg: dict) -> list[str]:
+    feature_sets = cfg.get("feature_sets", {})
+    if not feature_sets.get("lag", False):
+        return []
+
+    lag_cfg = cfg.get("lag_features", {}) or {}
+    columns = list(lag_cfg.get("columns", DEFAULT_LAG_BASE_COLUMNS))
+    lags = [int(x) for x in lag_cfg.get("lags", [96, 192])]
+    include_diff = bool(lag_cfg.get("include_diff", True))
+
+    out: list[str] = []
+    for col in columns:
+        for lag in lags:
+            out.append(f"{col}_lag_{lag}")
+            if include_diff:
+                out.append(f"{col}_diff_{lag}")
+    return out
+
+
+def add_lag_features(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
+    """Add safe lag features from official forecast inputs only.
+
+    These lags intentionally avoid historical true prices and actual boundary
+    values, because those are not available in the competition test setup.
+    """
+    lag_cfg = cfg.get("lag_features", {}) or {}
+    columns = list(lag_cfg.get("columns", DEFAULT_LAG_BASE_COLUMNS))
+    lags = [int(x) for x in lag_cfg.get("lags", [96, 192])]
+    include_diff = bool(lag_cfg.get("include_diff", True))
+
+    out = df.sort_values(time_col).reset_index(drop=True).copy()
+    missing = sorted(set(columns) - set(out.columns))
+    if missing:
+        raise ValueError(f"lag feature source columns missing: {missing}")
+
+    for col in columns:
+        for lag in lags:
+            lag_col = f"{col}_lag_{lag}"
+            out[lag_col] = out[col].shift(lag)
+            if include_diff:
+                out[f"{col}_diff_{lag}"] = out[col] - out[lag_col]
+    return out
+
+
 def add_capacity_features(
     df: pd.DataFrame,
     *,
@@ -405,10 +461,12 @@ def add_holiday_features(
 def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     out = add_time_features(df, time_col=time_col)
     feature_sets = cfg.get("feature_sets", {})
-    if feature_sets.get("bid_space", False):
+    if feature_sets.get("bid_space", False) or feature_sets.get("lag", False):
         out = add_bid_space_feature(out)
     if selected_derived_features(feature_sets):
         out = add_derived_features(out, time_col=time_col)
+    if feature_sets.get("lag", False):
+        out = add_lag_features(out, cfg, time_col=time_col)
     if feature_sets.get("capacity", False):
         out = add_capacity_features(out, time_col=time_col)
     if feature_sets.get("holiday", False):
@@ -423,6 +481,8 @@ def feature_columns(cfg: dict) -> list[str]:
     feature_sets = cfg.get("feature_sets", {})
     if feature_sets.get("bid_space", False):
         columns += BID_SPACE_FEATURES
+    if feature_sets.get("lag", False):
+        columns += lag_feature_columns(cfg)
     columns += selected_derived_features(feature_sets)
     if feature_sets.get("capacity", False):
         columns += CAPACITY_FEATURES

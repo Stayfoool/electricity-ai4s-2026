@@ -147,7 +147,17 @@ def _train_xgboost(
 ) -> Any:
     import xgboost as xgb
 
-    dtrain = xgb.DMatrix(train_df[feature_cols], label=train_df[target_col].to_numpy())
+    weight_col = cfg["model"].get("sample_weight_col")
+    train_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
+    dtrain = xgb.DMatrix(
+        train_df[feature_cols],
+        label=train_df[target_col].to_numpy(),
+        weight=train_weight,
+    )
     dvalid = xgb.DMatrix(valid_df[feature_cols], label=valid_df[target_col].to_numpy())
     return xgb.train(
         _xgb_params(cfg),
@@ -168,7 +178,17 @@ def _train_xgboost_full(
 ) -> Any:
     import xgboost as xgb
 
-    dtrain = xgb.DMatrix(train_df[feature_cols], label=train_df[target_col].to_numpy())
+    weight_col = cfg["model"].get("sample_weight_col")
+    train_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
+    dtrain = xgb.DMatrix(
+        train_df[feature_cols],
+        label=train_df[target_col].to_numpy(),
+        weight=train_weight,
+    )
     return xgb.train(
         _xgb_params(cfg),
         dtrain,
@@ -207,9 +227,16 @@ def _train_catboost(
     from catboost import CatBoostRegressor
 
     model = CatBoostRegressor(**_cat_params(cfg))
+    weight_col = cfg["model"].get("sample_weight_col")
+    sample_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
     model.fit(
         train_df[feature_cols],
         train_df[target_col].to_numpy(),
+        sample_weight=sample_weight,
         eval_set=(valid_df[feature_cols], valid_df[target_col].to_numpy()),
         early_stopping_rounds=int(cfg["model"]["early_stopping_rounds"]),
         verbose=False,
@@ -227,5 +254,16 @@ def _train_catboost_full(
     from catboost import CatBoostRegressor
 
     model = CatBoostRegressor(**_cat_params(cfg))
-    model.fit(train_df[feature_cols], train_df[target_col].to_numpy(), verbose=False)
+    weight_col = cfg["model"].get("sample_weight_col")
+    sample_weight = (
+        train_df[weight_col].to_numpy(dtype=float)
+        if weight_col and weight_col in train_df.columns
+        else None
+    )
+    model.fit(
+        train_df[feature_cols],
+        train_df[target_col].to_numpy(),
+        sample_weight=sample_weight,
+        verbose=False,
+    )
     return model

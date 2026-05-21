@@ -24,11 +24,13 @@ from .time_features import (
     add_capacity_features,
     add_derived_features,
     add_holiday_features,
+    add_lag_features,
     add_nwp_features,
     add_nwp_interaction_features,
     add_time_features,
     build_feature_frame,
     feature_columns,
+    lag_feature_columns,
     nwp_feature_columns,
 )
 from .weather_correction import (
@@ -58,6 +60,7 @@ __all__ = [
     "add_capacity_features",
     "add_derived_features",
     "add_holiday_features",
+    "add_lag_features",
     "add_nwp_features",
     "add_nwp_interaction_features",
     "add_time_features",
@@ -68,6 +71,7 @@ __all__ = [
     "build_feature_frame",
     "feature_columns",
     "fit_bias_table",
+    "lag_feature_columns",
     "nwp_feature_columns",
     "weather_correction_feature_columns",
 ]

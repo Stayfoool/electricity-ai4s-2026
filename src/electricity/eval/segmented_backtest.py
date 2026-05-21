@@ -10,6 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from electricity.data import load_train_frame
 from electricity.eval.backtest import (
     FoldResult,
+    _add_sample_weight,
     _add_target_variants,
     _daily_curve_z_rmse,
     _evaluate_dispatch,
@@ -93,6 +94,7 @@ def run_segmented_backtest(cfg: dict, *, config_path: str) -> Path:
             valid_df = valid_df.reset_index(drop=True)
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
+            train_df = _add_sample_weight(train_df, build_spec, time_col=time_col)
             actual_train_start = train_df[time_col].min()
             actual_train_end = train_df[time_col].max()
             print(

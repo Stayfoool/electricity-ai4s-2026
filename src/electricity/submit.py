@@ -7,6 +7,7 @@ import pandas as pd
 
 from electricity.data import load_test_frame, load_train_frame
 from electricity.dispatch import build_dispatch_prior, optimize_day
+from electricity.eval.backtest import _add_sample_weight
 from electricity.eval.segmented_utils import (
     add_slot_and_segment,
     segment_boundaries,
@@ -191,6 +192,7 @@ def _predict_full_model(
     spec: dict,
     time_col: str,
 ) -> np.ndarray:
+    train_df = _add_sample_weight(train_df, spec, time_col=time_col)
     if _segment_boundaries(spec) is not None:
         return _predict_segmented_full(
             train_df,
@@ -348,6 +350,8 @@ def run_ensemble_submit(cfg: dict, *, config_path: str) -> Path:
     preds: list[np.ndarray] = []
 
     for spec in specs:
+        if "sample_weighting" in cfg:
+            spec.setdefault("sample_weighting", cfg["sample_weighting"])
         build_spec = segmented_feature_build_spec(spec)
         feature_cols = feature_columns(build_spec)
         train_df, test_df = _build_features_train_test(

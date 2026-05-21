@@ -69,6 +69,26 @@ def _target_col_for_mode(target_mode: str) -> str:
     return f"target_{target_mode}"
 
 
+def _add_sample_weight(df: pd.DataFrame, cfg: dict, *, time_col: str) -> pd.DataFrame:
+    weight_cfg = cfg.get("sample_weighting") or {}
+    if not weight_cfg.get("enabled", False):
+        return df
+
+    out = df.copy()
+    weight_col = str(weight_cfg.get("weight_col", "sample_weight"))
+    base_weight = float(weight_cfg.get("base_weight", 1.0))
+    out[weight_col] = base_weight
+
+    month_weights = weight_cfg.get("month_weights", {}) or {}
+    if month_weights:
+        month = out[time_col].dt.month
+        for key, value in month_weights.items():
+            out.loc[month == int(key), weight_col] = float(value)
+
+    cfg.setdefault("model", {})["sample_weight_col"] = weight_col
+    return out
+
+
 def _daily_curve_z_rmse(
     df: pd.DataFrame,
     *,
@@ -362,6 +382,7 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
             ].copy()
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
+            train_df = _add_sample_weight(train_df, cfg, time_col=time_col)
             actual_train_start = train_df[time_col].min()
             actual_train_end = train_df[time_col].max()
             print(
@@ -496,6 +517,7 @@ def run_tau_search(cfg: dict, *, config_path: str) -> Path:
             valid_df = df[(df[time_col] >= valid_start) & (df[time_col] <= valid_end)].copy()
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
+            train_df = _add_sample_weight(train_df, cfg, time_col=time_col)
 
             model = train_model(
                 train_df,
@@ -615,6 +637,7 @@ def _predict_member_fold(
         raise ValueError(
             f"empty train/valid split for fold={fold['name']} member={spec['model']['name']}"
         )
+    train_df = _add_sample_weight(train_df, spec, time_col=time_col)
 
     actual_train_start = train_df[time_col].min()
     actual_train_end = train_df[time_col].max()
@@ -673,6 +696,8 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
     for spec in raw_specs:
         merged_spec = dict(spec)
         merged_spec.setdefault("paths", cfg["paths"])
+        if "sample_weighting" in cfg:
+            merged_spec.setdefault("sample_weighting", cfg["sample_weighting"])
         specs.append(merged_spec)
     weights = np.array([float(spec.get("weight", 1.0)) for spec in specs], dtype=float)
     weights = weights / weights.sum()
