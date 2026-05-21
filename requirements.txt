@@ -11,3 +11,4 @@ matplotlib
 seaborn
 jupyter
 catboost
+mlflow

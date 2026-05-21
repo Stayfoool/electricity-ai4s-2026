@@ -26,6 +26,7 @@ from electricity.eval.segmented_utils import (
 )
 from electricity.features import (
     apply_fold_bias_correction,
+    apply_fold_weather_correction,
     build_feature_frame,
     feature_columns,
 )
@@ -76,6 +77,9 @@ def run_segmented_backtest(cfg: dict, *, config_path: str) -> Path:
 
             fold_df = apply_fold_bias_correction(
                 df, build_spec, time_col=time_col, train_end=train_end
+            )
+            fold_df = apply_fold_weather_correction(
+                fold_df, build_spec, time_col=time_col, train_end=train_end
             )
             train_df = _fold_train_frame(
                 fold_df,

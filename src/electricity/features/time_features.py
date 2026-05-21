@@ -435,4 +435,9 @@ def feature_columns(cfg: dict) -> list[str]:
         from electricity.features.bias_correction import bias_correction_feature_columns
 
         columns += bias_correction_feature_columns(cfg)
+    if feature_sets.get("weather_correction", False):
+        # Imported lazily to avoid cycles.
+        from electricity.features.weather_correction import weather_correction_feature_columns
+
+        columns += weather_correction_feature_columns(cfg)
     return columns

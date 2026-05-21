@@ -20,6 +20,7 @@ from electricity.eval.segmented_utils import (
 )
 from electricity.features import (
     apply_fold_bias_correction,
+    apply_fold_weather_correction,
     build_feature_frame,
     feature_columns,
 )
@@ -347,6 +348,9 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
             fold_df = apply_fold_bias_correction(
                 df, cfg, time_col=time_col, train_end=train_end
             )
+            fold_df = apply_fold_weather_correction(
+                fold_df, cfg, time_col=time_col, train_end=train_end
+            )
             train_df = _fold_train_frame(
                 fold_df,
                 time_col=time_col,
@@ -662,9 +666,14 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
     reports_dir = Path(cfg["paths"]["reports_dir"])
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    specs = cfg["ensemble"]["members"]
-    if len(specs) < 2:
+    raw_specs = cfg["ensemble"]["members"]
+    if len(raw_specs) < 2:
         raise ValueError("ensemble requires at least two members")
+    specs = []
+    for spec in raw_specs:
+        merged_spec = dict(spec)
+        merged_spec.setdefault("paths", cfg["paths"])
+        specs.append(merged_spec)
     weights = np.array([float(spec.get("weight", 1.0)) for spec in specs], dtype=float)
     weights = weights / weights.sum()
 
@@ -717,11 +726,18 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
                 member_target_cols,
                 strict=True,
             ):
+                fold_train_end = pd.Timestamp(fold["train_end"])
                 fold_frame = apply_fold_bias_correction(
                     frame,
                     spec,
                     time_col=time_col,
-                    train_end=pd.Timestamp(fold["train_end"]),
+                    train_end=fold_train_end,
+                )
+                fold_frame = apply_fold_weather_correction(
+                    fold_frame,
+                    spec,
+                    time_col=time_col,
+                    train_end=fold_train_end,
                 )
                 pred, valid_df, train_range, best_iter = _predict_member_fold(
                     spec=spec,

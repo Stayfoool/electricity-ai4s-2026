@@ -31,6 +31,11 @@ from .time_features import (
     feature_columns,
     nwp_feature_columns,
 )
+from .weather_correction import (
+    WEATHER_CORRECTION_FEATURES,
+    apply_fold_weather_correction,
+    weather_correction_feature_columns,
+)
 
 __all__ = [
     "BIAS_CORRECTED_FORECAST_COLUMNS",
@@ -47,6 +52,7 @@ __all__ = [
     "NWP_INTERACTION_FEATURES",
     "RANK_FEATURES",
     "TIME_FEATURES",
+    "WEATHER_CORRECTION_FEATURES",
     "add_bias_correction_features",
     "add_bid_space_feature",
     "add_capacity_features",
@@ -55,6 +61,7 @@ __all__ = [
     "add_nwp_features",
     "add_nwp_interaction_features",
     "add_time_features",
+    "apply_fold_weather_correction",
     "apply_bias_correction",
     "apply_fold_bias_correction",
     "bias_correction_feature_columns",
@@ -62,4 +69,5 @@ __all__ = [
     "feature_columns",
     "fit_bias_table",
     "nwp_feature_columns",
+    "weather_correction_feature_columns",
 ]
