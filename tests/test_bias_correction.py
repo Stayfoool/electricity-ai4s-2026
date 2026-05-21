@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+
 from electricity.features.bias_correction import (
     BIAS_CORRECTED_FORECAST_COLUMNS,
     CORRECTABLE_CHANNELS,
