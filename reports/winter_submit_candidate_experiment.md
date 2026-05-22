@@ -63,3 +63,24 @@ The next promotion step should generate final `output.csv` files for both candid
 - `reports/backtest_ensemble_champion_segmented6_prior_blend_weekly20_5fold_daily.csv`
 - `reports/backtest_ensemble_champion_segmented6_prior_blend_holiday15_weekly15_5fold.csv`
 - `reports/backtest_ensemble_champion_segmented6_prior_blend_holiday15_weekly15_5fold_daily.csv`
+
+## Online Submission Feedback
+
+Submitted on 2026-05-22:
+
+| candidate | online score |
+|---|---:|
+| champion | 5482 |
+| holiday_only | 5370 |
+
+Outcome:
+
+- `champion` beats `holiday_only` online by `+112`.
+- The Jan-Feb-like local validation ranking did not match the leaderboard ranking for these two candidates.
+- Treat `holiday_only` as rejected for now, not as a winter-submit replacement.
+- Future winter-specialized ideas must beat champion on a stricter promotion rule: local winter validation lift is not enough; they should also preserve broad-validation stability or have a clear diagnostic reason that explains why the online test differs.
+
+Updated decision:
+
+- Current online champion remains `configs/ensemble_champion_segmented6_prior.yaml`.
+- Do not submit further holiday-only variants unless a new diagnostic identifies why this one failed online.

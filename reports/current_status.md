@@ -3,6 +3,24 @@
 Last updated: 2026-05-21 Asia/Shanghai.
 
 
+## Latest Update: Online Submission Feedback
+
+Completed on 2026-05-22.
+
+Submitted candidates:
+
+| candidate | config | online score |
+|---|---|---:|
+| champion | `configs/ensemble_champion_segmented6_prior.yaml` | 5482 |
+| holiday_only | `configs/ensemble_champion_segmented6_prior_holiday_only.yaml` | 5370 |
+
+Decision:
+
+- `champion` is the current online best.
+- `holiday_only` is rejected for now: it beat champion on Jan-Feb-like local validation but lost online by `112`.
+- This weakens confidence in using Jan-Feb-like validation alone for model promotion.
+- Next promotions should require broad-validation stability plus a diagnostic reason, not just winter-fold lift.
+
 ## Latest Update: Bid Space Diagnostics
 
 Completed on 2026-05-21.

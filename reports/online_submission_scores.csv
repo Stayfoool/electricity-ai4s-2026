@@ -1,0 +1,3 @@
+submitted_at,model,config_path,output_path,online_score,notes
+2026-05-22,champion,configs/ensemble_champion_segmented6_prior.yaml,outputs/output_ens_champion_segmented6_prior.csv,5482,current best online score
+2026-05-22,holiday_only,configs/ensemble_champion_segmented6_prior_holiday_only.yaml,outputs/output_ens_champion_segmented6_prior_holiday_only.csv,5370,underperformed champion despite better Jan-Feb-like validation
