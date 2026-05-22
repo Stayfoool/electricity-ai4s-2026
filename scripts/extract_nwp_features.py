@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import tempfile
 from pathlib import Path
+from zipfile import ZipFile
 
 import numpy as np
 import pandas as pd
@@ -45,6 +47,35 @@ def extract_file(path: Path) -> list[dict[str, float | str]]:
     return rows
 
 
+def extract_zip_member(zip_path: Path, member: str) -> list[dict[str, float | str]]:
+    with ZipFile(zip_path) as zf:
+        with zf.open(member) as src, tempfile.TemporaryDirectory() as tmp_dir:
+            temp_path = Path(tmp_dir) / Path(member).name
+            with temp_path.open("wb") as f:
+                f.write(src.read())
+            try:
+                return extract_file(temp_path)
+            finally:
+                temp_path.unlink(missing_ok=True)
+
+
+def discover_nc_inputs(input_dir: Path, zip_path: Path) -> tuple[str, list[Path] | list[str]]:
+    paths = sorted(input_dir.glob("*.nc"))
+    if paths:
+        return "directory", paths
+    if not zip_path.exists():
+        raise FileNotFoundError(f"no nc files found in {input_dir}; zip not found: {zip_path}")
+    with ZipFile(zip_path) as zf:
+        members = sorted(
+            name
+            for name in zf.namelist()
+            if name.startswith("to_sais_new/all_nc/") and name.endswith(".nc")
+        )
+    if not members:
+        raise FileNotFoundError(f"no nc files found in {input_dir} or {zip_path}")
+    return "zip", members
+
+
 def expand_to_15min(hourly: pd.DataFrame) -> pd.DataFrame:
     rows: list[pd.DataFrame] = []
     feature_cols = [c for c in hourly.columns if c not in {"issue_date", "target_date", "hour"}]
@@ -62,6 +93,7 @@ def expand_to_15min(hourly: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", default="eletricmaterial/to_sais_new/all_nc")
+    parser.add_argument("--zip-path", default="eletricmaterial/to_sais_new.zip")
     parser.add_argument("--output", default="artifacts/features/nwp_grid_15min.csv")
     parser.add_argument("--manifest", default="artifacts/features/nwp_grid_15min_manifest.md")
     parser.add_argument("--limit", type=int, default=None)
@@ -73,16 +105,20 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest.parent.mkdir(parents=True, exist_ok=True)
 
-    paths = sorted(input_dir.glob("*.nc"))
+    source_kind, inputs = discover_nc_inputs(input_dir, Path(args.zip_path))
     if args.limit is not None:
-        paths = paths[: args.limit]
-    if not paths:
-        raise FileNotFoundError(f"no nc files found in {input_dir}")
+        inputs = inputs[: args.limit]
 
     all_rows: list[dict[str, float | str]] = []
-    for i, path in enumerate(paths, start=1):
-        print(f"extracting {i}/{len(paths)} {path.name}", flush=True)
-        all_rows.extend(extract_file(path))
+    if source_kind == "directory":
+        for i, path in enumerate(inputs, start=1):
+            print(f"extracting {i}/{len(inputs)} {Path(path).name}", flush=True)
+            all_rows.extend(extract_file(Path(path)))
+    else:
+        zip_path = Path(args.zip_path)
+        for i, member in enumerate(inputs, start=1):
+            print(f"extracting {i}/{len(inputs)} {Path(member).name}", flush=True)
+            all_rows.extend(extract_zip_member(zip_path, str(member)))
 
     hourly = pd.DataFrame(all_rows).sort_values(["target_date", "hour"]).reset_index(drop=True)
     expanded = expand_to_15min(hourly)
@@ -92,13 +128,15 @@ def main() -> None:
     manifest.write_text(
         "# NWP Grid 15-Minute Features\n\n"
         f"- source_dir: `{input_dir}`\n"
+        f"- source_zip: `{args.zip_path}`\n"
+        f"- source_used: `{source_kind}`\n"
         "- source_type: competition-provided NWP NetCDF files under `all_nc`.\n"
         "- alignment: file date D is treated as issue date; features align to Beijing "
         "target day D+1.\n"
         "- aggregation: full grid lat/lon mean/std/min/max per variable and per hour; "
         "hourly values are repeated to 15-minute rows.\n"
         "- derived: `nwp_wind_speed100_* = sqrt(u100^2 + v100^2)` grid statistics.\n"
-        f"- nc_files: `{len(paths)}`\n"
+        f"- nc_files: `{len(inputs)}`\n"
         f"- output_rows: `{len(expanded)}`\n"
         f"- feature_count: `{len(feature_cols)}`\n"
         f"- time_min: `{expanded['times'].min()}`\n"
