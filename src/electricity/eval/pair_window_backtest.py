@@ -194,6 +194,17 @@ def _build_pair_frame(
     )
 
 
+def _pair_point_feature_cols(cfg: dict, available_cols: list[str]) -> list[str]:
+    configured = cfg["model"].get("pair_point_feature_cols")
+    if configured is None:
+        return available_cols
+    selected = list(configured)
+    missing = sorted(set(selected) - set(available_cols))
+    if missing:
+        raise ValueError(f"model.pair_point_feature_cols contains unavailable columns: {missing}")
+    return selected
+
+
 def run_pair_window_backtest(cfg: dict, *, config_path: str) -> Path:
     time_col = cfg["data"]["time_col"]
     target_col = cfg["data"]["target_col"]
@@ -203,7 +214,8 @@ def run_pair_window_backtest(cfg: dict, *, config_path: str) -> Path:
     reports_dir = Path(cfg["paths"]["reports_dir"])
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    point_feature_cols = feature_columns(cfg)
+    all_point_feature_cols = feature_columns(cfg)
+    point_feature_cols = _pair_point_feature_cols(cfg, all_point_feature_cols)
     pair_agg_stats = cfg["model"].get("pair_agg_stats")
     pair_feature_cols = pair_window_feature_columns(
         point_feature_cols,
@@ -226,6 +238,7 @@ def run_pair_window_backtest(cfg: dict, *, config_path: str) -> Path:
             "pair_agg_stats",
             ",".join(pair_agg_stats or ["mean", "std", "min", "max"]),
         )
+        mlflow.log_param("all_point_feature_count", len(all_point_feature_cols))
         mlflow.log_param("point_feature_count", len(point_feature_cols))
         mlflow.log_param("pair_feature_count", len(pair_feature_cols))
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from electricity.eval.pair_window_backtest import optimize_pair_window_day
+from electricity.eval.pair_window_backtest import _pair_point_feature_cols, optimize_pair_window_day
 from electricity.features.pair_window_features import (
     PAIR_TARGET_COL,
     build_pair_window_frame,
@@ -61,3 +61,12 @@ def test_optimize_pair_window_day_chooses_max_predicted_spread() -> None:
     assert result.predicted_spread == 5.0
     assert (result.power[10:18] == -1000).all()
     assert (result.power[30:38] == 1000).all()
+
+
+def test_pair_point_feature_cols_can_select_subset() -> None:
+    cfg = {"model": {"pair_point_feature_cols": ["bid_space", "net_load"]}}
+
+    assert _pair_point_feature_cols(cfg, ["hour", "bid_space", "net_load"]) == [
+        "bid_space",
+        "net_load",
+    ]

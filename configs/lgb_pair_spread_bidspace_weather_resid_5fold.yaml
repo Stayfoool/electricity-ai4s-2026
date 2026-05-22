@@ -100,6 +100,22 @@ model:
   name: lgb_pair_spread_bidspace_weather_resid_5fold
   target_mode: pair_spread
   train_window_days: 180
+  pair_point_feature_cols:
+    - bid_space
+    - net_load
+    - renewable_ratio
+    - wind_ratio
+    - solar_ratio
+    - tie_line_ratio
+    - non_market_ratio
+    - net_load_day_rank_pct
+    - renewable_ratio_day_rank_pct
+    - nwp_wind_speed100_mean_mh_resid
+    - nwp_wind_speed100_max_mh_resid
+    - nwp_u100_mean_mh_resid
+    - nwp_ghi_mean_mh_resid
+    - nwp_tcc_mean_mh_resid
+    - nwp_sp_mean_mh_resid
   pair_agg_stats:
     - mean
   params:
