@@ -318,9 +318,11 @@ def select_daily(
     out["threshold"] = threshold
     out["lift_vs_anchor"] = out["true_profit"] - out["top1_true_profit"]
     out["changed_from_anchor"] = (out["candidate_rank"] != 1).astype(int)
-    out["miss_vs_oracle_top10"] = (
-        out.groupby("date")["true_profit"].transform("max") - out["true_profit"]
+    oracle = df.groupby("date", as_index=False)["true_profit"].max().rename(
+        columns={"true_profit": "oracle_top10_profit"}
     )
+    out = out.merge(oracle, on="date", how="left")
+    out["miss_vs_oracle_top10"] = out["oracle_top10_profit"] - out["true_profit"]
     return out
 
 
@@ -506,7 +508,8 @@ def write_report(
     overall: pd.DataFrame,
     params: pd.DataFrame,
 ) -> None:
-    best = overall.iloc[0]
+    learned = overall[~overall["method"].isin(["anchor_top1", "oracle_top10"])].copy()
+    best_learned = learned.sort_values("mean_profit", ascending=False).iloc[0]
     anchor = overall[overall["method"] == "anchor_top1"].iloc[0]
     rank_counts = (
         selected.groupby(["method", "candidate_rank"], as_index=False)
@@ -547,16 +550,16 @@ def write_report(
         "## Decision",
         "",
     ]
-    if best["method"] != "anchor_top1" and float(best["profit_delta_vs_anchor"]) > 100:
+    if float(best_learned["profit_delta_vs_anchor"]) > 100:
         lines += [
             "- A learned top-K reranker beats anchor top1 by more than 100/day on all_5fold.",
             "- Next step: inspect fold/regime stability, then implement submit-time rerank.",
         ]
-    elif best["method"] != "anchor_top1" and float(best["mean_profit"]) > float(
+    elif float(best_learned["mean_profit"]) > float(
         anchor["mean_profit"]
     ):
         lines += [
-            "- A learned top-K reranker is positive but small.",
+            "- The best learned top-K reranker is positive but too small.",
             "- Do not submit yet unless Jan-Feb-like and loss-day behavior are also favorable.",
         ]
     else:
