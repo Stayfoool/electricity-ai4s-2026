@@ -1,0 +1,9 @@
+method,fold,days,mean_profit,loss_days,changed_days,mean_lift_vs_top1
+spatial_weather_rerank_cv,valid_2025_09,28,11310.428164914061,0,0,0.0
+spatial_weather_rerank_cv,valid_2025_10,31,7899.10326217971,3,0,0.0
+spatial_weather_rerank_cv,valid_2025_11,30,7120.766696117661,0,0,0.0
+spatial_weather_rerank_cv,valid_2025_12,31,5920.995277983931,1,4,-7.228054094355802
+champion_prior_top1,valid_2025_09,28,11310.428164914061,0,0,0.0
+champion_prior_top1,valid_2025_10,31,7899.10326217971,3,0,0.0
+champion_prior_top1,valid_2025_11,30,7120.766696117661,0,0,0.0
+champion_prior_top1,valid_2025_12,31,5928.223332078288,1,0,0.0

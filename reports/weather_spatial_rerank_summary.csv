@@ -1,0 +1,4 @@
+method,days,mean_profit,worst_profit,loss_days,mean_lift_vs_top1,positive_lift_days,negative_lift_days,changed_days,mean_selected_rank
+champion_prior_top1,120,7991.350949359346,-15925.897357546191,4,0.0,0,0,0,1.0
+spatial_weather_rerank_cv,120,7989.483702051638,-15925.897357546191,4,-1.867247307708582,1,1,4,1.0333333333333334
+oracle_top10_upper_bound,120,8709.583893471561,-9394.211555758002,2,718.2329441122129,93,0,93,5.3

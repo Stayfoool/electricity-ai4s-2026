@@ -95,3 +95,4 @@ Use fold-safe spatially selected NWP grid cells to correct renewable forecast er
 - `reports/weather_spatial_correction_daily_dispatch.csv`
 - `reports/weather_spatial_selected_features.csv`
 - `reports/weather_spatial_correction_importance.csv`
+- `reports/weather_spatial_correction_predictions.csv`

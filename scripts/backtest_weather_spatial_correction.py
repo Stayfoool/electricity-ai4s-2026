@@ -21,6 +21,7 @@ OUT_FOLDS = REPORTS_DIR / "weather_spatial_correction_folds.csv"
 OUT_DAILY = REPORTS_DIR / "weather_spatial_correction_daily_dispatch.csv"
 OUT_FEATURES = REPORTS_DIR / "weather_spatial_selected_features.csv"
 OUT_IMPORTANCE = REPORTS_DIR / "weather_spatial_correction_importance.csv"
+OUT_PREDICTIONS = REPORTS_DIR / "weather_spatial_correction_predictions.csv"
 OUT_MD = REPORTS_DIR / "weather_spatial_correction.md"
 
 BASE_FEATURES = ["month", "hour", "renewable_forecast", "wind_forecast", "solar_forecast"]
@@ -417,6 +418,7 @@ def write_report(folds: pd.DataFrame, daily: pd.DataFrame, importance: pd.DataFr
         f"- `{OUT_DAILY}`",
         f"- `{OUT_FEATURES}`",
         f"- `{OUT_IMPORTANCE}`",
+        f"- `{OUT_PREDICTIONS}`",
     ]
     OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -447,6 +449,7 @@ def main() -> None:
     daily_rows: list[pd.DataFrame] = []
     feature_rows: list[dict[str, object]] = []
     importance_rows: list[pd.DataFrame] = []
+    prediction_rows: list[pd.DataFrame] = []
 
     for fold in folds:
         fold_name = str(fold["name"])
@@ -511,15 +514,30 @@ def main() -> None:
             )
         )
         daily_rows.append(daily_dispatch_summary(valid, fold_name=fold_name))
+        pred_cols = [
+            "target_hour",
+            "valid_date",
+            "fold",
+            "bid_space_fct",
+            "mh_bid_space_fct",
+            "spatial_raw_bid_space_fct",
+            "spatial_resid_bid_space_fct",
+            "spatial_raw_pred_error",
+            "spatial_resid_pred_error",
+        ]
+        valid["fold"] = fold_name
+        prediction_rows.append(valid[pred_cols].copy())
 
     folds_df = pd.DataFrame(fold_rows)
     daily_df = pd.concat(daily_rows, ignore_index=True)
     features_df = pd.DataFrame(feature_rows)
     importance_df = pd.concat(importance_rows, ignore_index=True)
+    predictions_df = pd.concat(prediction_rows, ignore_index=True)
     folds_df.to_csv(OUT_FOLDS, index=False)
     daily_df.to_csv(OUT_DAILY, index=False)
     features_df.to_csv(OUT_FEATURES, index=False)
     importance_df.to_csv(OUT_IMPORTANCE, index=False)
+    predictions_df.to_csv(OUT_PREDICTIONS, index=False)
     write_report(folds_df, daily_df, importance_df)
     print(markdown_table(folds_df, floatfmt=".4f"))
     print(f"markdown_path={OUT_MD}")

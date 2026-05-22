@@ -1,0 +1,5 @@
+heldout_fold,signal,top_k,gamma,threshold,train_mean_profit,train_loss_days,train_changed_days
+valid_2025_09,spatial_raw,3,0.02,0.0,6987.075617585538,4,1
+valid_2025_10,spatial_raw,3,0.02,0.0,8029.558924807779,1,1
+valid_2025_11,spatial_raw,3,0.02,0.0,8287.554939465927,4,1
+valid_2025_12,spatial_resid,3,0.1,0.0,8710.683346802705,3,1
