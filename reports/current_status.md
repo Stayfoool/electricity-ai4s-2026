@@ -3,6 +3,38 @@
 Last updated: 2026-05-21 Asia/Shanghai.
 
 
+## Latest Update: Shallow LightGBM Champion Experiment
+
+Completed on 2026-05-22.
+
+Artifacts:
+
+- `configs/ensemble_champion_segmented6_prior_shallow_d3_l7_leaf200_5fold.yaml`
+- `configs/ensemble_champion_segmented6_prior_shallow_d4_l15_leaf200_5fold.yaml`
+- `configs/ensemble_champion_segmented6_prior_shallow_d5_l31_leaf150_5fold.yaml`
+- `reports/shallow_lgb_champion_experiment.md`
+
+Setup:
+
+- Kept current champion ensemble, feature set, weights, 5fold validation, and dispatch prior unchanged.
+- Only changed LightGBM complexity: `max_depth`, `num_leaves`, `min_data_in_leaf`, and `lambda_l2`.
+
+Main findings:
+
+| variant | all_5fold | Jan-Feb-like | delta all_5fold | delta Jan-Feb-like |
+|---|---:|---:|---:|---:|
+| champion | `9952.035` | `14153.500` | `0.000` | `0.000` |
+| shallow_d3_l7_leaf200 | `9620.470` | `13966.266` | `-331.565` | `-187.234` |
+| shallow_d4_l15_leaf200 | `9717.146` | `13916.702` | `-234.889` | `-236.797` |
+| shallow_d5_l31_leaf150 | `9710.315` | `13939.276` | `-241.720` | `-214.224` |
+
+Decision:
+
+- Reject standalone shallow-tree variants.
+- Current champion does not appear to be mainly limited by excessive tree depth.
+- Do not expand this shallow grid unless combined with a new feature set or E2E objective.
+- Next higher-value direction: weather time-alignment/core-feature audit, then pair-level/E2E window-profit modeling.
+
 ## Latest Update: Current Prior Top-K Consensus
 
 Completed on 2026-05-22.
