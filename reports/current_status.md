@@ -3,6 +3,41 @@
 Last updated: 2026-05-21 Asia/Shanghai.
 
 
+## Latest Update: Current Prior Top-K Consensus
+
+Completed on 2026-05-22.
+
+Artifacts:
+
+- `scripts/analyze_current_prior_topk_consensus.py`
+- `reports/current_prior_topk_consensus_diagnostics.md`
+- `reports/current_prior_topk_consensus_summary.csv`
+- `reports/current_prior_topk_consensus_by_regime.csv`
+- `reports/current_prior_topk_pair_summary.csv`
+
+Setup:
+
+- Anchor model: `configs/ensemble_champion_segmented6_prior_5fold.yaml`.
+- Candidate set is restricted to the current champion-prior model's own top-10 legal charge/discharge pairs.
+- Other experts only provide support/rank signals; they cannot introduce pairs outside anchor top10.
+- Fold-specific dispatch priors are rebuilt exactly as in the champion-prior backtest.
+
+Main findings:
+
+| rule | all_5fold mean profit | lift vs anchor | loss days |
+|---|---:|---:|---:|
+| anchor_top1 | `9952.035` | `0.000` | 4 |
+| support2_then_anchor_rank | `9876.130` | `-75.905` | 4 |
+| anchor_rank_le5_support2 | `9855.947` | `-96.088` | 4 |
+| support_score | `9808.230` | `-143.804` | 3 |
+
+Decision:
+
+- Current champion-prior top10 contains upside: oracle top10 upper bound is `+737.58` over anchor top1.
+- The tested support/consensus rules do not capture that upside and underperform anchor top1 in all major regimes, including Jan-Feb-like.
+- Do not generate or submit a current-prior topK consensus file.
+- If revisiting topK, use a stronger pairwise/rerank learner with stricter out-of-fold validation, not simple expert-support rules.
+
 ## Latest Update: Online Submission Feedback
 
 Completed on 2026-05-22.
