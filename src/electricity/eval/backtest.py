@@ -698,6 +698,10 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
         merged_spec.setdefault("paths", cfg["paths"])
         if "sample_weighting" in cfg:
             merged_spec.setdefault("sample_weighting", cfg["sample_weighting"])
+        if "weekly_relative_features" in cfg:
+            merged_spec.setdefault(
+                "weekly_relative_features", cfg["weekly_relative_features"]
+            )
         specs.append(merged_spec)
     weights = np.array([float(spec.get("weight", 1.0)) for spec in specs], dtype=float)
     weights = weights / weights.sum()

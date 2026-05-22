@@ -79,7 +79,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--pattern",
-        default="backtest_*_5fold_daily.csv",
+        default="backtest_*5fold*_daily.csv",
         help="glob pattern under reports/ for daily reports",
     )
     parser.add_argument(

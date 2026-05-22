@@ -161,3 +161,41 @@ def test_bid_space_feature() -> None:
     # Should not pull in derived features when only bid_space requested
     assert "net_load" not in out.columns
     assert "renewable_ratio" not in out.columns
+
+
+def test_weekly_relative_features_are_safe_same_slot_history() -> None:
+    times = pd.date_range("2025-01-01 00:00:00", periods=96 * 9, freq="15min")
+    df = pd.DataFrame(
+        {
+            "times": times,
+            "系统负荷预测值": range(len(times)),
+            "风光总加预测值": [10.0] * len(times),
+            "联络线预测值": [1.0] * len(times),
+            "风电预测值": [6.0] * len(times),
+            "光伏预测值": [4.0] * len(times),
+            "水电预测值": [1.0] * len(times),
+            "非市场化机组预测值": [2.0] * len(times),
+        }
+    )
+    cfg = {
+        "data": {"feature_cols": []},
+        "feature_sets": {"weekly_relative": True},
+        "weekly_relative_features": {
+            "columns": ["系统负荷预测值", "bid_space"],
+            "windows_days": [7],
+            "include_delta": True,
+            "include_mean_dev": True,
+            "include_percentile": True,
+        },
+    }
+
+    out = build_feature_frame(df, cfg, time_col="times")
+    cols = feature_columns(cfg)
+
+    assert "系统负荷预测值_weekly_delta_7d" in cols
+    assert "系统负荷预测值_weekly_mean_dev_7d" in cols
+    assert "系统负荷预测值_weekly_pct_7d" in cols
+    assert "bid_space_weekly_delta_7d" in cols
+    assert pd.isna(out.loc[0, "系统负荷预测值_weekly_delta_7d"])
+    assert out.loc[96 * 7, "系统负荷预测值_weekly_delta_7d"] == 96 * 7
+    assert out.loc[96 * 7, "系统负荷预测值_weekly_pct_7d"] == 1.0

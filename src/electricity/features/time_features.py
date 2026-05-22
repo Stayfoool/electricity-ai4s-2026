@@ -44,6 +44,14 @@ RANK_FEATURES = [
 
 BID_SPACE_FEATURES = ["bid_space"]
 
+DEFAULT_WEEKLY_RELATIVE_BASE_COLUMNS = [
+    "系统负荷预测值",
+    "风光总加预测值",
+    "风电预测值",
+    "光伏预测值",
+    "bid_space",
+]
+
 DEFAULT_LAG_BASE_COLUMNS = [
     "系统负荷预测值",
     "风光总加预测值",
@@ -344,6 +352,84 @@ def add_lag_features(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") ->
     return out
 
 
+def weekly_relative_feature_columns(cfg: dict) -> list[str]:
+    feature_sets = cfg.get("feature_sets", {})
+    if not feature_sets.get("weekly_relative", False):
+        return []
+
+    rel_cfg = cfg.get("weekly_relative_features", {}) or {}
+    columns = list(rel_cfg.get("columns", DEFAULT_WEEKLY_RELATIVE_BASE_COLUMNS))
+    windows = [int(x) for x in rel_cfg.get("windows_days", [7])]
+    include_delta = bool(rel_cfg.get("include_delta", True))
+    include_mean_dev = bool(rel_cfg.get("include_mean_dev", False))
+    include_percentile = bool(rel_cfg.get("include_percentile", False))
+
+    out: list[str] = []
+    for col in columns:
+        for days in windows:
+            if include_delta:
+                out.append(f"{col}_weekly_delta_{days}d")
+            if include_mean_dev:
+                out.append(f"{col}_weekly_mean_dev_{days}d")
+            if include_percentile:
+                out.append(f"{col}_weekly_pct_{days}d")
+    return out
+
+
+def add_weekly_relative_features(
+    df: pd.DataFrame,
+    cfg: dict,
+    *,
+    time_col: str = "times",
+) -> pd.DataFrame:
+    """Add safe same-slot historical forecast-relative features.
+
+    These features only use previous official forecast inputs at the same
+    15-minute slot. They avoid true prices and actual boundary values.
+    """
+    rel_cfg = cfg.get("weekly_relative_features", {}) or {}
+    columns = list(rel_cfg.get("columns", DEFAULT_WEEKLY_RELATIVE_BASE_COLUMNS))
+    windows = [int(x) for x in rel_cfg.get("windows_days", [7])]
+    include_delta = bool(rel_cfg.get("include_delta", True))
+    include_mean_dev = bool(rel_cfg.get("include_mean_dev", False))
+    include_percentile = bool(rel_cfg.get("include_percentile", False))
+
+    out = df.sort_values(time_col).reset_index(drop=True).copy()
+    missing = sorted(set(columns) - set(out.columns))
+    if missing:
+        raise ValueError(f"weekly relative source columns missing: {missing}")
+
+    slot = out[time_col].dt.hour * 4 + out[time_col].dt.minute // 15
+    out["__weekly_slot"] = slot
+    grouped = out.groupby("__weekly_slot", sort=False)
+
+    for col in columns:
+        series_by_slot = grouped[col]
+        for days in windows:
+            if include_delta:
+                lag = series_by_slot.shift(days)
+                out[f"{col}_weekly_delta_{days}d"] = out[col] - lag
+            if include_mean_dev or include_percentile:
+                history = series_by_slot.shift(1)
+            if include_mean_dev:
+                mean = history.groupby(out["__weekly_slot"], sort=False).transform(
+                    lambda s, window_days=days: s.rolling(window=window_days, min_periods=1).mean()
+                )
+                out[f"{col}_weekly_mean_dev_{days}d"] = out[col] - mean
+            if include_percentile:
+                pct = series_by_slot.transform(
+                    lambda s, window_days=days: s.rolling(
+                        window=window_days + 1, min_periods=2
+                    ).apply(
+                        lambda values: float(np.mean(values[:-1] <= values[-1])),
+                        raw=True,
+                    )
+                )
+                out[f"{col}_weekly_pct_{days}d"] = pct
+
+    return out.drop(columns=["__weekly_slot"])
+
+
 def add_capacity_features(
     df: pd.DataFrame,
     *,
@@ -461,12 +547,18 @@ def add_holiday_features(
 def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     out = add_time_features(df, time_col=time_col)
     feature_sets = cfg.get("feature_sets", {})
-    if feature_sets.get("bid_space", False) or feature_sets.get("lag", False):
+    if (
+        feature_sets.get("bid_space", False)
+        or feature_sets.get("lag", False)
+        or feature_sets.get("weekly_relative", False)
+    ):
         out = add_bid_space_feature(out)
     if selected_derived_features(feature_sets):
         out = add_derived_features(out, time_col=time_col)
     if feature_sets.get("lag", False):
         out = add_lag_features(out, cfg, time_col=time_col)
+    if feature_sets.get("weekly_relative", False):
+        out = add_weekly_relative_features(out, cfg, time_col=time_col)
     if feature_sets.get("capacity", False):
         out = add_capacity_features(out, time_col=time_col)
     if feature_sets.get("holiday", False):
@@ -483,6 +575,8 @@ def feature_columns(cfg: dict) -> list[str]:
         columns += BID_SPACE_FEATURES
     if feature_sets.get("lag", False):
         columns += lag_feature_columns(cfg)
+    if feature_sets.get("weekly_relative", False):
+        columns += weekly_relative_feature_columns(cfg)
     columns += selected_derived_features(feature_sets)
     if feature_sets.get("capacity", False):
         columns += CAPACITY_FEATURES

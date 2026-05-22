@@ -28,10 +28,12 @@ from .time_features import (
     add_nwp_features,
     add_nwp_interaction_features,
     add_time_features,
+    add_weekly_relative_features,
     build_feature_frame,
     feature_columns,
     lag_feature_columns,
     nwp_feature_columns,
+    weekly_relative_feature_columns,
 )
 from .weather_correction import (
     WEATHER_CORRECTION_FEATURES,
@@ -64,6 +66,7 @@ __all__ = [
     "add_nwp_features",
     "add_nwp_interaction_features",
     "add_time_features",
+    "add_weekly_relative_features",
     "apply_fold_weather_correction",
     "apply_bias_correction",
     "apply_fold_bias_correction",
@@ -72,6 +75,7 @@ __all__ = [
     "feature_columns",
     "fit_bias_table",
     "lag_feature_columns",
+    "weekly_relative_feature_columns",
     "nwp_feature_columns",
     "weather_correction_feature_columns",
 ]
