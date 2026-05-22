@@ -148,6 +148,20 @@ NWP_INTERACTION_FEATURES = [
     "nwp_wind_speed_x_wind_solar",
 ]
 
+NWP_RESIDUAL_SOURCE_FEATURES = [
+    "nwp_ghi_mean",
+    "nwp_ghi_max",
+    "nwp_tcc_mean",
+    "nwp_tcc_max",
+    "nwp_wind_speed100_mean",
+    "nwp_wind_speed100_max",
+    "nwp_u100_mean",
+    "nwp_v100_mean",
+    "nwp_sp_mean",
+]
+
+NWP_RESIDUAL_FEATURES = [f"{col}_mh_resid" for col in NWP_RESIDUAL_SOURCE_FEATURES]
+
 FEATURE_GROUPS = {
     "business_features": BUSINESS_FEATURES,
     "deviation_features": DEVIATION_FEATURES,
@@ -252,10 +266,9 @@ def add_derived_features(df: pd.DataFrame, *, time_col: str = "times") -> pd.Dat
 def add_nwp_features(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") -> pd.DataFrame:
     path = cfg.get("nwp", {}).get("feature_csv")
     if not path:
-        raise ValueError("feature_sets.nwp=true requires nwp.feature_csv")
+        raise ValueError("NWP feature sets require nwp.feature_csv")
 
-    nwp_columns = nwp_feature_columns(cfg)
-    raw_nwp_columns = sorted(set(nwp_columns) & set(NWP_FEATURES))
+    raw_nwp_columns = sorted(nwp_required_raw_columns(cfg))
     nwp = pd.read_csv(path, parse_dates=[time_col])
     missing = sorted(set(raw_nwp_columns) - set(nwp.columns))
     if missing:
@@ -263,6 +276,8 @@ def add_nwp_features(df: pd.DataFrame, cfg: dict, *, time_col: str = "times") ->
     out = df.merge(nwp[[time_col, *raw_nwp_columns]], on=time_col, how="left")
     if cfg.get("feature_sets", {}).get("nwp_interactions", False):
         out = add_nwp_interaction_features(out)
+    if cfg.get("feature_sets", {}).get("nwp_residual", False):
+        out = add_nwp_residual_features(out, cfg)
     return out
 
 
@@ -278,18 +293,63 @@ def add_nwp_interaction_features(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def add_nwp_residual_features(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    out = df.copy()
+    cols = nwp_residual_source_columns(cfg)
+    missing = sorted(set(cols) - set(out.columns))
+    if missing:
+        raise ValueError(f"cannot build NWP residual features, missing: {missing}")
+    if "month" not in out.columns or "hour" not in out.columns:
+        raise ValueError("NWP residual features require month/hour time features")
+
+    grouped = out.groupby(["month", "hour"], observed=True)
+    for col in cols:
+        out[f"{col}_mh_resid"] = out[col] - grouped[col].transform("mean")
+    return out
+
+
+def _nwp_mode_columns(cfg: dict) -> list[str]:
+    mode = cfg.get("nwp", {}).get("mode", "full")
+    if mode == "full":
+        return list(NWP_FEATURES)
+    if mode == "core":
+        return list(NWP_CORE_FEATURES)
+    raise ValueError(f"unsupported nwp.mode={mode}")
+
+
+def nwp_residual_source_columns(cfg: dict) -> list[str]:
+    cols = cfg.get("nwp_residual", {}).get("columns", NWP_RESIDUAL_SOURCE_FEATURES)
+    explicit = list(cols)
+    invalid = sorted(set(explicit) - set(NWP_FEATURES))
+    if invalid:
+        raise ValueError(f"unsupported nwp_residual.columns: {invalid}")
+    return explicit
+
+
+def nwp_residual_feature_columns(cfg: dict) -> list[str]:
+    if not cfg.get("feature_sets", {}).get("nwp_residual", False):
+        return []
+    return [f"{col}_mh_resid" for col in nwp_residual_source_columns(cfg)]
+
+
+def nwp_required_raw_columns(cfg: dict) -> list[str]:
+    feature_sets = cfg.get("feature_sets", {})
+    columns: set[str] = set()
+    if feature_sets.get("nwp", False):
+        columns.update(_nwp_mode_columns(cfg))
+    if feature_sets.get("nwp_interactions", False):
+        columns.update(NWP_CORE_FEATURES)
+    if feature_sets.get("nwp_residual", False):
+        columns.update(nwp_residual_source_columns(cfg))
+    return sorted(columns)
+
+
 def nwp_feature_columns(cfg: dict) -> list[str]:
     feature_sets = cfg.get("feature_sets", {})
     if not feature_sets.get("nwp", False):
         return []
 
-    mode = cfg.get("nwp", {}).get("mode", "full")
-    if mode == "full":
-        columns = list(NWP_FEATURES)
-    elif mode == "core":
-        columns = list(NWP_CORE_FEATURES)
-    else:
-        raise ValueError(f"unsupported nwp.mode={mode}")
+    columns = _nwp_mode_columns(cfg)
 
     if feature_sets.get("nwp_interactions", False):
         columns += NWP_INTERACTION_FEATURES
@@ -563,7 +623,7 @@ def build_feature_frame(df: pd.DataFrame, cfg: dict, *, time_col: str = "times")
         out = add_capacity_features(out, time_col=time_col)
     if feature_sets.get("holiday", False):
         out = add_holiday_features(out, time_col=time_col)
-    if feature_sets.get("nwp", False):
+    if feature_sets.get("nwp", False) or feature_sets.get("nwp_residual", False):
         out = add_nwp_features(out, cfg, time_col=time_col)
     return out
 
@@ -584,6 +644,8 @@ def feature_columns(cfg: dict) -> list[str]:
         columns += HOLIDAY_FEATURES
     if feature_sets.get("nwp", False):
         columns += nwp_feature_columns(cfg)
+    if feature_sets.get("nwp_residual", False):
+        columns += nwp_residual_feature_columns(cfg)
     if feature_sets.get("bias_correction", False):
         # Imported lazily to avoid cycles.
         from electricity.features.bias_correction import bias_correction_feature_columns

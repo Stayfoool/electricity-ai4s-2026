@@ -130,6 +130,43 @@ def test_build_feature_frame_requires_nwp_path() -> None:
         build_feature_frame(df, cfg, time_col="times")
 
 
+def test_build_feature_frame_supports_nwp_residual_without_raw_nwp_features(
+    tmp_path,
+) -> None:
+    nwp_path = tmp_path / "nwp.csv"
+    times = pd.to_datetime(
+        [
+            "2025-01-02 00:00:00",
+            "2025-02-02 00:00:00",
+            "2025-01-02 01:00:00",
+        ]
+    )
+    nwp = pd.DataFrame(
+        {
+            "times": times,
+            "nwp_wind_speed100_mean": [10.0, 14.0, 30.0],
+            "nwp_ghi_mean": [1.0, 3.0, 5.0],
+        }
+    )
+    nwp.to_csv(nwp_path, index=False)
+    df = pd.DataFrame({"times": times})
+    cfg = {
+        "data": {"feature_cols": []},
+        "feature_sets": {"nwp_residual": True},
+        "nwp": {"feature_csv": str(nwp_path)},
+        "nwp_residual": {"columns": ["nwp_wind_speed100_mean", "nwp_ghi_mean"]},
+    }
+
+    out = build_feature_frame(df, cfg, time_col="times")
+    columns = feature_columns(cfg)
+
+    assert "nwp_wind_speed100_mean" not in columns
+    assert "nwp_wind_speed100_mean_mh_resid" in columns
+    assert "nwp_ghi_mean_mh_resid" in columns
+    # Residual is within month x hour. Each group has one row here, so it is zero.
+    assert out["nwp_wind_speed100_mean_mh_resid"].tolist() == [0.0, 0.0, 0.0]
+
+
 def test_bid_space_feature() -> None:
     df = pd.DataFrame(
         {
