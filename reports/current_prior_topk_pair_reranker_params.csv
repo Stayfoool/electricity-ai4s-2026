@@ -1,0 +1,11 @@
+heldout_fold,method,threshold,feature_count,train_rows,valid_rows
+valid_2025_09,gbr_true_profit,750.0,179,1480,280
+valid_2025_09,gbr_lift,1000.0,179,1480,280
+valid_2025_10,gbr_true_profit,500.0,179,1450,310
+valid_2025_10,gbr_lift,1000.0,179,1450,310
+valid_2025_11,gbr_true_profit,500.0,179,1460,300
+valid_2025_11,gbr_lift,1000.0,179,1460,300
+valid_2025_12,gbr_true_profit,1000.0,179,1450,310
+valid_2025_12,gbr_lift,1000.0,179,1450,310
+valid_2025_jan_feb,gbr_true_profit,250.0,179,1200,560
+valid_2025_jan_feb,gbr_lift,0.0,179,1200,560
