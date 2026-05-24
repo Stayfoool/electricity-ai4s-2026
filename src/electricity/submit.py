@@ -16,6 +16,7 @@ from electricity.eval.segmented_utils import (
 )
 from electricity.features import (
     apply_fold_bias_correction,
+    apply_forecast_error_augmentation,
     build_feature_frame,
     feature_columns,
 )
@@ -193,6 +194,7 @@ def _predict_full_model(
     time_col: str,
 ) -> np.ndarray:
     train_df = _add_sample_weight(train_df, spec, time_col=time_col)
+    train_df = apply_forecast_error_augmentation(train_df, spec, time_col=time_col)
     if _segment_boundaries(spec) is not None:
         return _predict_segmented_full(
             train_df,
@@ -352,6 +354,10 @@ def run_ensemble_submit(cfg: dict, *, config_path: str) -> Path:
     for spec in specs:
         if "sample_weighting" in cfg:
             spec.setdefault("sample_weighting", cfg["sample_weighting"])
+        if "forecast_error_augmentation" in cfg:
+            spec.setdefault(
+                "forecast_error_augmentation", cfg["forecast_error_augmentation"]
+            )
         build_spec = segmented_feature_build_spec(spec)
         feature_cols = feature_columns(build_spec)
         train_df, test_df = _build_features_train_test(

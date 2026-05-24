@@ -8,6 +8,7 @@ import pandas as pd
 import yaml
 
 from electricity.dispatch import optimize_day
+from electricity.eval.backtest import _fold_bounds
 from electricity.eval.metrics import daily_profit
 from electricity.features.bid_space import ACTUAL_COLS, PRED_COLS, markdown_table
 from electricity.features.weather import merge_weather_renewable
@@ -248,10 +249,15 @@ def run_backtest() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     pred_frames: list[pd.DataFrame] = []
     daily_frames: list[pd.DataFrame] = []
     for fold in cfg["folds"]:
-        train_end = pd.Timestamp(fold["train_end"]).floor("h")
-        valid_start = pd.Timestamp(fold["valid_start"]).floor("h")
-        valid_end = pd.Timestamp(fold["valid_end"]).floor("h")
+        bounds = _fold_bounds(fold)
+        train_end = bounds.train_end.floor("h")
+        valid_start = bounds.valid_start.floor("h")
+        valid_end = bounds.valid_end.floor("h")
         train = hourly[hourly["target_hour"] <= train_end].copy()
+        if bounds.train_start is not None:
+            train = train[train["target_hour"] >= bounds.train_start.floor("h")].copy()
+        outside_valid = (train["target_hour"] < valid_start) | (train["target_hour"] > valid_end)
+        train = train[outside_valid].copy()
         valid = hourly[
             (hourly["target_hour"] >= valid_start) & (hourly["target_hour"] <= valid_end)
         ].copy()

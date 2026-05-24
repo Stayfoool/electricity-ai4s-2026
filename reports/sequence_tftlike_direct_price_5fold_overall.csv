@@ -1,0 +1,2 @@
+model,mean_profit,min_profit,mean_rmse,mean_curve_z_rmse,loss_days,mean_regret,mean_charge_gap,mean_discharge_gap,profit_delta_vs_champion,loss_day_delta_vs_champion,regret_delta_vs_champion
+sequence_tftlike_direct_price_5fold,8563.321321267384,5911.382126132779,0.7563720776702458,0.8262084782499644,10,4052.9813721985142,12.870337941628264,10.331781874039937,-719.0829366783046,5,719.0829366783057

@@ -1,0 +1,33 @@
+variant,gate_type,blend_weight,description
+global_w0.05,global,0.05,所有日期都启用残差
+jan_feb_only_w0.05,month,0.05,只在 Jan-Feb-like 验证月启用
+late_winter_w0.05,month,0.05,只在 12/1/2 月启用
+winter_w0.05,month,0.05,只在 11/12/1/2 月启用
+testlike_q25_w0.05,test_like_distance,0.05,只在最像测试集的 25% 历史日启用，阈值=0.6912
+testlike_q50_w0.05,test_like_distance,0.05,只在最像测试集的 50% 历史日启用，阈值=0.7940
+testlike_q75_w0.05,test_like_distance,0.05,只在最像测试集的 75% 历史日启用，阈值=1.0016
+late_winter_testlike_q50_w0.05,month+test_like_distance,0.05,只在 12/1/2 月且测试相似度前 50% 启用，阈值=0.7940
+global_w0.1,global,0.1,所有日期都启用残差
+jan_feb_only_w0.1,month,0.1,只在 Jan-Feb-like 验证月启用
+late_winter_w0.1,month,0.1,只在 12/1/2 月启用
+winter_w0.1,month,0.1,只在 11/12/1/2 月启用
+testlike_q25_w0.1,test_like_distance,0.1,只在最像测试集的 25% 历史日启用，阈值=0.6912
+testlike_q50_w0.1,test_like_distance,0.1,只在最像测试集的 50% 历史日启用，阈值=0.7940
+testlike_q75_w0.1,test_like_distance,0.1,只在最像测试集的 75% 历史日启用，阈值=1.0016
+late_winter_testlike_q50_w0.1,month+test_like_distance,0.1,只在 12/1/2 月且测试相似度前 50% 启用，阈值=0.7940
+global_w0.15,global,0.15,所有日期都启用残差
+jan_feb_only_w0.15,month,0.15,只在 Jan-Feb-like 验证月启用
+late_winter_w0.15,month,0.15,只在 12/1/2 月启用
+winter_w0.15,month,0.15,只在 11/12/1/2 月启用
+testlike_q25_w0.15,test_like_distance,0.15,只在最像测试集的 25% 历史日启用，阈值=0.6912
+testlike_q50_w0.15,test_like_distance,0.15,只在最像测试集的 50% 历史日启用，阈值=0.7940
+testlike_q75_w0.15,test_like_distance,0.15,只在最像测试集的 75% 历史日启用，阈值=1.0016
+late_winter_testlike_q50_w0.15,month+test_like_distance,0.15,只在 12/1/2 月且测试相似度前 50% 启用，阈值=0.7940
+global_w0.2,global,0.2,所有日期都启用残差
+jan_feb_only_w0.2,month,0.2,只在 Jan-Feb-like 验证月启用
+late_winter_w0.2,month,0.2,只在 12/1/2 月启用
+winter_w0.2,month,0.2,只在 11/12/1/2 月启用
+testlike_q25_w0.2,test_like_distance,0.2,只在最像测试集的 25% 历史日启用，阈值=0.6912
+testlike_q50_w0.2,test_like_distance,0.2,只在最像测试集的 50% 历史日启用，阈值=0.7940
+testlike_q75_w0.2,test_like_distance,0.2,只在最像测试集的 75% 历史日启用，阈值=1.0016
+late_winter_testlike_q50_w0.2,month+test_like_distance,0.2,只在 12/1/2 月且测试相似度前 50% 启用，阈值=0.7940

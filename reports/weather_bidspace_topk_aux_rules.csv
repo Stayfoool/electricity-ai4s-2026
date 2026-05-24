@@ -1,0 +1,6 @@
+heldout_fold,rule_id,selected_from_train,score_name,gate_feature,gate_quantile,gate_threshold,max_rank,score_margin,train_mean_lift_vs_anchor,train_changed_days,train_negative_lift_days,train_loss_days,train_anchor_loss_days,valid_rows,train_rows
+valid_2025_09,aux_weather_wind_score__gate_top1_top2_gap_q0.10__rank5__margin0.10,True,weather_wind_score,top1_top2_gap,0.1,-0.07528318762241792,5,0.1,57.500922649093205,7.0,0.0,4.0,4.0,280,1480
+valid_2025_10,aux_netload_score__gate_top5_spread_std_q0.20__rank5__margin0.20,True,netload_score,top5_spread_std,0.2,0.037060443183016316,5,0.2,32.440083369876184,11.0,1.0,1.0,1.0,310,1450
+valid_2025_11,aux_netload_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,netload_score,top1_top2_gap,0.2,-0.0471981223318227,3,0.1,50.92730566201871,14.0,3.0,4.0,4.0,300,1460
+valid_2025_12,aux_weather_wind_score__gate_top1_top2_gap_q0.20__rank5__margin0.20,True,weather_wind_score,top1_top2_gap,0.2,-0.04363576313064068,5,0.2,53.03281913848335,12.0,2.0,3.0,3.0,310,1450
+valid_2025_jan_feb,aux_weather_wind_score__gate_top1_top2_gap_q0.10__rank3__margin0.20,True,weather_wind_score,top1_top2_gap,0.1,-0.06956281592898393,3,0.2,60.39309081363437,3.0,0.0,4.0,4.0,560,1200

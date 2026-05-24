@@ -21,6 +21,7 @@ from electricity.eval.segmented_utils import (
 from electricity.features import (
     apply_fold_bias_correction,
     apply_fold_weather_correction,
+    apply_forecast_error_augmentation,
     build_feature_frame,
     feature_columns,
 )
@@ -50,6 +51,23 @@ class FoldResult:
     trade_days: int
     trade_days_ratio: float
     best_iteration: int
+
+
+@dataclass(frozen=True)
+class FoldBounds:
+    train_end: pd.Timestamp
+    valid_start: pd.Timestamp
+    valid_end: pd.Timestamp
+    train_start: pd.Timestamp | None
+
+
+def _fold_bounds(fold: dict) -> FoldBounds:
+    return FoldBounds(
+        train_end=pd.Timestamp(fold["train_end"]),
+        valid_start=pd.Timestamp(fold["valid_start"]),
+        valid_end=pd.Timestamp(fold["valid_end"]),
+        train_start=pd.Timestamp(fold["train_start"]) if fold.get("train_start") else None,
+    )
 
 
 def _add_target_variants(df: pd.DataFrame, *, time_col: str, target_col: str) -> pd.DataFrame:
@@ -126,6 +144,7 @@ def _maybe_build_prior(
     time_col: str,
     target_col: str,
     train_end: pd.Timestamp,
+    train_start: pd.Timestamp | None = None,
     valid_start: pd.Timestamp | None = None,
     valid_end: pd.Timestamp | None = None,
 ) -> tuple[np.ndarray | None, np.ndarray | None, float, float]:
@@ -144,6 +163,8 @@ def _maybe_build_prior(
     lambda_charge = float(prior_cfg.get("lambda_charge", 0.0))
     lambda_discharge = float(prior_cfg.get("lambda_discharge", 0.0))
     prior_labels = labels[[time_col, target_col]]
+    if train_start is not None:
+        prior_labels = prior_labels[prior_labels[time_col] >= train_start]
     if valid_start is not None and valid_end is not None:
         outside = (prior_labels[time_col] < valid_start) | (
             prior_labels[time_col] > valid_end
@@ -361,21 +382,37 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
-            train_end = pd.Timestamp(fold["train_end"])
-            valid_start = pd.Timestamp(fold["valid_start"])
-            valid_end = pd.Timestamp(fold["valid_end"])
+            bounds = _fold_bounds(fold)
+            train_end = bounds.train_end
+            valid_start = bounds.valid_start
+            valid_end = bounds.valid_end
 
             fold_df = apply_fold_bias_correction(
-                df, cfg, time_col=time_col, train_end=train_end
+                df,
+                cfg,
+                time_col=time_col,
+                train_end=train_end,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             fold_df = apply_fold_weather_correction(
-                fold_df, cfg, time_col=time_col, train_end=train_end
+                fold_df,
+                cfg,
+                time_col=time_col,
+                train_end=train_end,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             train_df = _fold_train_frame(
                 fold_df,
                 time_col=time_col,
                 train_end=train_end,
                 train_window_days=train_window_days,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             valid_df = fold_df[
                 (fold_df[time_col] >= valid_start) & (fold_df[time_col] <= valid_end)
@@ -383,6 +420,7 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
             train_df = _add_sample_weight(train_df, cfg, time_col=time_col)
+            train_df = apply_forecast_error_augmentation(train_df, cfg, time_col=time_col)
             actual_train_start = train_df[time_col].min()
             actual_train_end = train_df[time_col].max()
             print(
@@ -415,6 +453,7 @@ def run_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=train_end,
+                train_start=bounds.train_start,
                 valid_start=valid_start,
                 valid_end=valid_end,
             )
@@ -504,20 +543,25 @@ def run_tau_search(cfg: dict, *, config_path: str) -> Path:
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
-            train_end = pd.Timestamp(fold["train_end"])
-            valid_start = pd.Timestamp(fold["valid_start"])
-            valid_end = pd.Timestamp(fold["valid_end"])
+            bounds = _fold_bounds(fold)
+            train_end = bounds.train_end
+            valid_start = bounds.valid_start
+            valid_end = bounds.valid_end
 
             train_df = _fold_train_frame(
                 df,
                 time_col=time_col,
                 train_end=train_end,
                 train_window_days=train_window_days,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             valid_df = df[(df[time_col] >= valid_start) & (df[time_col] <= valid_end)].copy()
             if train_df.empty or valid_df.empty:
                 raise ValueError(f"empty train/valid split for fold={fold['name']}")
             train_df = _add_sample_weight(train_df, cfg, time_col=time_col)
+            train_df = apply_forecast_error_augmentation(train_df, cfg, time_col=time_col)
 
             model = train_model(
                 train_df,
@@ -534,6 +578,7 @@ def run_tau_search(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=train_end,
+                train_start=bounds.train_start,
                 valid_start=valid_start,
                 valid_end=valid_end,
             )
@@ -616,28 +661,26 @@ def _predict_member_fold(
     fold: dict,
 ) -> tuple[np.ndarray, pd.DataFrame, str, int]:
     train_window_days = spec["model"].get("train_window_days")
-    train_end = pd.Timestamp(fold["train_end"])
-    valid_start = pd.Timestamp(fold["valid_start"])
-    valid_end = pd.Timestamp(fold["valid_end"])
-    fold_train_start = (
-        pd.Timestamp(fold["train_start"]) if fold.get("train_start") else None
-    )
+    bounds = _fold_bounds(fold)
 
     train_df = _fold_train_frame(
         frame,
         time_col=time_col,
-        train_end=train_end,
+        train_end=bounds.train_end,
         train_window_days=train_window_days,
-        train_start=fold_train_start,
-        valid_start=valid_start,
-        valid_end=valid_end,
+        train_start=bounds.train_start,
+        valid_start=bounds.valid_start,
+        valid_end=bounds.valid_end,
     )
-    valid_df = frame[(frame[time_col] >= valid_start) & (frame[time_col] <= valid_end)].copy()
+    valid_df = frame[
+        (frame[time_col] >= bounds.valid_start) & (frame[time_col] <= bounds.valid_end)
+    ].copy()
     if train_df.empty or valid_df.empty:
         raise ValueError(
             f"empty train/valid split for fold={fold['name']} member={spec['model']['name']}"
         )
     train_df = _add_sample_weight(train_df, spec, time_col=time_col)
+    train_df = apply_forecast_error_augmentation(train_df, spec, time_col=time_col)
 
     actual_train_start = train_df[time_col].min()
     actual_train_end = train_df[time_col].max()
@@ -702,6 +745,10 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
             merged_spec.setdefault(
                 "weekly_relative_features", cfg["weekly_relative_features"]
             )
+        if "forecast_error_augmentation" in cfg:
+            merged_spec.setdefault(
+                "forecast_error_augmentation", cfg["forecast_error_augmentation"]
+            )
         specs.append(merged_spec)
     weights = np.array([float(spec.get("weight", 1.0)) for spec in specs], dtype=float)
     weights = weights / weights.sum()
@@ -755,18 +802,24 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
                 member_target_cols,
                 strict=True,
             ):
-                fold_train_end = pd.Timestamp(fold["train_end"])
+                bounds = _fold_bounds(fold)
                 fold_frame = apply_fold_bias_correction(
                     frame,
                     spec,
                     time_col=time_col,
-                    train_end=fold_train_end,
+                    train_end=bounds.train_end,
+                    train_start=bounds.train_start,
+                    valid_start=bounds.valid_start,
+                    valid_end=bounds.valid_end,
                 )
                 fold_frame = apply_fold_weather_correction(
                     fold_frame,
                     spec,
                     time_col=time_col,
-                    train_end=fold_train_end,
+                    train_end=bounds.train_end,
+                    train_start=bounds.train_start,
+                    valid_start=bounds.valid_start,
+                    valid_end=bounds.valid_end,
                 )
                 pred, valid_df, train_range, best_iter = _predict_member_fold(
                     spec=spec,
@@ -804,6 +857,7 @@ def run_ensemble_backtest(cfg: dict, *, config_path: str) -> Path:
                 time_col=time_col,
                 target_col=target_col,
                 train_end=pd.Timestamp(fold["train_end"]),
+                train_start=_fold_bounds(fold).train_start,
                 valid_start=pd.Timestamp(fold["valid_start"]),
                 valid_end=pd.Timestamp(fold["valid_end"]),
             )

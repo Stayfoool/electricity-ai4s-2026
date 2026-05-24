@@ -1,0 +1,2 @@
+model,mean_profit,min_profit,mean_window_rmse,loss_days,mean_regret,mean_charge_gap,mean_discharge_gap,profit_delta_vs_champion,loss_day_delta_vs_champion
+sequence_window_tftlike_5fold,8429.279767596257,5785.25128911662,0.6310722329145703,10,4187.022925869642,13.236129032258066,10.017434715821812,-853.1244903494319,5

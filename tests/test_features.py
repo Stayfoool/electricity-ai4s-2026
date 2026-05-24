@@ -52,6 +52,19 @@ def test_feature_columns_include_derived_only_when_enabled() -> None:
     assert "net_load" in feature_columns(cfg)
 
 
+def test_feature_columns_reject_label_or_actual_value_columns() -> None:
+    cfg = {
+        "data": {
+            "feature_cols": ["系统负荷预测值", "风光总加实际值", "A"],
+            "target_col": "A",
+        },
+        "feature_sets": {},
+    }
+
+    with pytest.raises(ValueError, match="leakage"):
+        feature_columns(cfg)
+
+
 def test_feature_columns_support_feature_families() -> None:
     cfg = {
         "data": {"feature_cols": ["系统负荷预测值"]},

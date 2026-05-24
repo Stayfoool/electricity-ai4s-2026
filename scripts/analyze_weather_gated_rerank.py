@@ -76,21 +76,23 @@ def load_prediction_days() -> pd.DataFrame:
 
 def build_prior_by_fold(cfg: dict) -> dict[str, tuple[np.ndarray, np.ndarray, float, float]]:
     # Import locally: this is an analysis script and intentionally reuses the exact backtest logic.
-    from electricity.eval.backtest import _maybe_build_prior
+    from electricity.eval.backtest import _fold_bounds, _maybe_build_prior
 
     labels = load_train_frame(cfg)
     time_col = cfg["data"]["time_col"]
     target_col = cfg["data"]["target_col"]
     out = {}
     for fold in cfg["folds"]:
+        bounds = _fold_bounds(fold)
         out[fold["name"]] = _maybe_build_prior(
             cfg,
             labels,
             time_col=time_col,
             target_col=target_col,
-            train_end=pd.Timestamp(fold["train_end"]),
-            valid_start=pd.Timestamp(fold["valid_start"]),
-            valid_end=pd.Timestamp(fold["valid_end"]),
+            train_end=bounds.train_end,
+            train_start=bounds.train_start,
+            valid_start=bounds.valid_start,
+            valid_end=bounds.valid_end,
         )
     return out
 

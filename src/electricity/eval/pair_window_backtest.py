@@ -9,7 +9,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from electricity.data import load_train_frame
 from electricity.dispatch import DispatchResult, optimize_day
-from electricity.eval.backtest import FoldResult, _fold_train_frame
+from electricity.eval.backtest import FoldResult, _fold_bounds, _fold_train_frame
 from electricity.eval.metrics import daily_profit
 from electricity.features import build_feature_frame, feature_columns
 from electricity.features.pair_window_features import (
@@ -244,15 +244,19 @@ def run_pair_window_backtest(cfg: dict, *, config_path: str) -> Path:
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
-            train_end = pd.Timestamp(fold["train_end"])
-            valid_start = pd.Timestamp(fold["valid_start"])
-            valid_end = pd.Timestamp(fold["valid_end"])
+            bounds = _fold_bounds(fold)
+            train_end = bounds.train_end
+            valid_start = bounds.valid_start
+            valid_end = bounds.valid_end
 
             train_points = _fold_train_frame(
                 df,
                 time_col=time_col,
                 train_end=train_end,
                 train_window_days=train_window_days,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             valid_points = df[(df[time_col] >= valid_start) & (df[time_col] <= valid_end)].copy()
             if train_points.empty or valid_points.empty:

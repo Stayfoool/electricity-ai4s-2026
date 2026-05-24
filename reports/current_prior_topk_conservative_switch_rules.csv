@@ -1,0 +1,6 @@
+heldout_fold,rule_id,selected_from_train,score_name,gate_feature,gate_quantile,gate_threshold,max_rank,score_margin,train_mean_lift_vs_anchor,train_changed_days,train_negative_lift_days,train_loss_days,train_anchor_loss_days,valid_rows,train_rows
+valid_2025_09,switch_bidspace_rank_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,bidspace_rank_score,top1_top2_gap,0.2,-0.036762885487069075,3,0.1,26.88925717128307,11.0,3.0,4.0,4.0,280,1480
+valid_2025_10,switch_bidspace_rank_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,bidspace_rank_score,top1_top2_gap,0.2,-0.027038979350633176,3,0.1,17.562126601537994,13.0,3.0,1.0,1.0,310,1450
+valid_2025_11,switch_bidspace_rank_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,bidspace_rank_score,top1_top2_gap,0.2,-0.0471981223318227,3,0.1,41.667450861103916,13.0,2.0,4.0,4.0,300,1460
+valid_2025_12,switch_bidspace_rank_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,bidspace_rank_score,top1_top2_gap,0.2,-0.04363576313064068,3,0.1,24.155356396579517,13.0,3.0,3.0,3.0,310,1450
+valid_2025_jan_feb,switch_bidspace_rank_score__gate_top1_top2_gap_q0.20__rank3__margin0.10,True,bidspace_rank_score,top1_top2_gap,0.2,-0.04359019981322336,3,0.1,26.25212067716081,10.0,3.0,4.0,4.0,560,1200

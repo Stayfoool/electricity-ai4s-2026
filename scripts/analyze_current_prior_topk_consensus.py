@@ -11,6 +11,7 @@ from electricity.dispatch import rank_day_pairs
 from electricity.eval.backtest import (
     _add_sample_weight,
     _add_target_variants,
+    _fold_bounds,
     _fold_train_frame,
     _maybe_build_prior,
     _model_spec_frame,
@@ -80,6 +81,8 @@ def _prepare_ensemble_specs(cfg: dict) -> list[dict]:
             spec.setdefault("sample_weighting", cfg["sample_weighting"])
         if "weekly_relative_features" in cfg:
             spec.setdefault("weekly_relative_features", cfg["weekly_relative_features"])
+        if "forecast_error_augmentation" in cfg:
+            spec.setdefault("forecast_error_augmentation", cfg["forecast_error_augmentation"])
         specs.append(spec)
     return specs
 
@@ -108,18 +111,24 @@ def predict_ensemble_config(cfg: dict) -> pd.DataFrame:
         for spec, frame, cols, train_target_col in zip(
             specs, member_frames, member_feature_cols, member_target_cols, strict=True
         ):
-            fold_train_end = pd.Timestamp(fold["train_end"])
+            bounds = _fold_bounds(fold)
             fold_frame = apply_fold_bias_correction(
                 frame,
                 spec,
                 time_col=time_col,
-                train_end=fold_train_end,
+                train_end=bounds.train_end,
+                train_start=bounds.train_start,
+                valid_start=bounds.valid_start,
+                valid_end=bounds.valid_end,
             )
             fold_frame = apply_fold_weather_correction(
                 fold_frame,
                 spec,
                 time_col=time_col,
-                train_end=fold_train_end,
+                train_end=bounds.train_end,
+                train_start=bounds.train_start,
+                valid_start=bounds.valid_start,
+                valid_end=bounds.valid_end,
             )
             pred, valid_df, _, _ = _predict_member_fold(
                 spec=spec,
@@ -163,25 +172,34 @@ def predict_single_config(cfg: dict) -> pd.DataFrame:
 
     rows: list[pd.DataFrame] = []
     for fold in cfg["folds"]:
-        train_end = pd.Timestamp(fold["train_end"])
-        valid_start = pd.Timestamp(fold["valid_start"])
-        valid_end = pd.Timestamp(fold["valid_end"])
-        fold_train_start = (
-            pd.Timestamp(fold["train_start"]) if fold.get("train_start") else None
+        bounds = _fold_bounds(fold)
+        train_end = bounds.train_end
+        valid_start = bounds.valid_start
+        valid_end = bounds.valid_end
+        fold_df = apply_fold_bias_correction(
+            df,
+            cfg,
+            time_col=time_col,
+            train_end=train_end,
+            train_start=bounds.train_start,
+            valid_start=valid_start,
+            valid_end=valid_end,
         )
-        fold_df = apply_fold_bias_correction(df, cfg, time_col=time_col, train_end=train_end)
         fold_df = apply_fold_weather_correction(
             fold_df,
             cfg,
             time_col=time_col,
             train_end=train_end,
+            train_start=bounds.train_start,
+            valid_start=valid_start,
+            valid_end=valid_end,
         )
         train_df = _fold_train_frame(
             fold_df,
             time_col=time_col,
             train_end=train_end,
             train_window_days=train_window_days,
-            train_start=fold_train_start,
+            train_start=bounds.train_start,
             valid_start=valid_start,
             valid_end=valid_end,
         )
@@ -239,6 +257,7 @@ def fold_priors(
             time_col=time_col,
             target_col=target_col,
             train_end=pd.Timestamp(fold["train_end"]),
+            train_start=_fold_bounds(fold).train_start,
             valid_start=pd.Timestamp(fold["valid_start"]),
             valid_end=pd.Timestamp(fold["valid_end"]),
         )

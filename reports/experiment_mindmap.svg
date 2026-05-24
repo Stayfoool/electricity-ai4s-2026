@@ -1,0 +1,671 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1800" viewBox="0 0 2600 1800">
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.16"/>
+  </filter>
+  <style>
+    .bg { fill: #f8fafc; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 800; fill: #0f172a; }
+    .nodeText { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 700; fill: #0f172a; }
+    .leafText { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 600; fill: #334155; }
+    .small { font-size: 23px; }
+    .medium { font-size: 28px; }
+    .large { font-size: 34px; }
+    .center { font-size: 42px; }
+    .muted { fill: #64748b; font-size: 22px; font-weight: 600; }
+  </style>
+</defs>
+<rect class="bg" x="0" y="0" width="2600" height="1800"/>
+<circle cx="1300" cy="900" r="720" fill="#e0f2fe" opacity="0.25"/>
+<circle cx="1300" cy="900" r="520" fill="#dcfce7" opacity="0.18"/>
+<rect x="1070" y="818" width="460" height="164" rx="34" fill="#ffffff" stroke="#0f172a" stroke-width="4" filter="url(#shadow)"/>
+<text x="1300" y="888" text-anchor="middle" dominant-baseline="middle" class="title center">
+<tspan x="1300" dy="-0.575emem">AI4S 电力赛</tspan>
+<tspan x="1300" dy="1.15em">实验全景</tspan>
+</text>
+<text x="1300" y="962" text-anchor="middle" class="muted">已尝试方案 / 结论 / 下一步</text>
+<path d="M 1530 900 C 1547.5 900, 1547.5 210, 1565 210" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="1565" y="164.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#2563eb" stroke-width="4" filter="url(#shadow)"/>
+<text x="1705.0" y="210" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="1705.0" dy="-0.575emem">当前主线</tspan>
+<tspan x="1705.0" dy="1.15em">[冠军锚点]</tspan>
+</text>
+<path d="M 1845 210 C 1892.5 210, 1892.5 72.0, 1940 72.0" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="35.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="2060.0" y="72.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">点电价预测</tspan>
+</text>
+<path d="M 2180 72.0 C 2220.0 72.0, 2220.0 46.0, 2260 46.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="19.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="46.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">96点曲线</tspan>
+</text>
+<path d="M 2180 72.0 C 2220.0 72.0, 2220.0 98.0, 2260 98.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="71.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="98.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">LightGBM ensemble</tspan>
+</text>
+<path d="M 1845 210 C 1892.5 210, 1892.5 164.0, 1940 164.0" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="127.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="2060.0" y="164.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">合法pair枚举</tspan>
+</text>
+<path d="M 2180 164.0 C 2220.0 164.0, 2220.0 138.0, 2260 138.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="111.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="138.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">3321个窗口对</tspan>
+</text>
+<path d="M 2180 164.0 C 2220.0 164.0, 2220.0 190.0, 2260 190.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="163.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="190.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">充8点/放8点</tspan>
+</text>
+<path d="M 1845 210 C 1892.5 210, 1892.5 256.0, 1940 256.0" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="219.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="2060.0" y="256.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">prior dispatch</tspan>
+</text>
+<path d="M 2180 256.0 C 2220.0 256.0, 2220.0 230.0, 2260 230.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="203.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="230.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">增强当前冠军</tspan>
+</text>
+<path d="M 2180 256.0 C 2220.0 256.0, 2220.0 282.0, 2260 282.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="255.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="282.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">线上5482</tspan>
+</text>
+<path d="M 1845 210 C 1892.5 210, 1892.5 348.0, 1940 348.0" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="311.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="2060.0" y="348.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">提交基准</tspan>
+</text>
+<path d="M 2180 348.0 C 2220.0 348.0, 2220.0 322.0, 2260 322.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="295.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="322.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">holiday_only线上5370</tspan>
+</text>
+<path d="M 2180 348.0 C 2220.0 348.0, 2220.0 374.0, 2260 374.0" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="347.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="2355.0" y="374.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">冠军仍是主锚点</tspan>
+</text>
+<path d="M 1530 900 C 1547.5 900, 1547.5 560, 1565 560" fill="none" stroke="#0891b2" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="1565" y="514.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#0891b2" stroke-width="4" filter="url(#shadow)"/>
+<text x="1705.0" y="560" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="1705.0" dy="0.0emem">基础模型路线</tspan>
+</text>
+<path d="M 1845 560 C 1892.5 560, 1892.5 422.0, 1940 422.0" fill="none" stroke="#0891b2" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="385.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#0891b2" stroke-width="2.5"/>
+<text x="2060.0" y="422.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">LightGBM</tspan>
+</text>
+<path d="M 2180 422.0 C 2220.0 422.0, 2220.0 370.0, 2260 370.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="343.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="370.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">baseline</tspan>
+</text>
+<path d="M 2180 422.0 C 2220.0 422.0, 2220.0 422.0, 2260 422.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="395.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="422.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">last180d</tspan>
+</text>
+<path d="M 2180 422.0 C 2220.0 422.0, 2220.0 474.0, 2260 474.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="447.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="474.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">last90d拒绝</tspan>
+</text>
+<path d="M 1845 560 C 1892.5 560, 1892.5 514.0, 1940 514.0" fill="none" stroke="#0891b2" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="477.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#0891b2" stroke-width="2.5"/>
+<text x="2060.0" y="514.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">分时模型</tspan>
+</text>
+<path d="M 2180 514.0 C 2220.0 514.0, 2220.0 488.0, 2260 488.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="461.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="488.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">segmented_6候选</tspan>
+</text>
+<path d="M 2180 514.0 C 2220.0 514.0, 2220.0 540.0, 2260 540.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="513.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="540.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">margin6稳定候选</tspan>
+</text>
+<path d="M 1845 560 C 1892.5 560, 1892.5 606.0, 1940 606.0" fill="none" stroke="#0891b2" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="569.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#0891b2" stroke-width="2.5"/>
+<text x="2060.0" y="606.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">模型家族</tspan>
+</text>
+<path d="M 2180 606.0 C 2220.0 606.0, 2220.0 580.0, 2260 580.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="553.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="580.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">CatBoost不如冠军</tspan>
+</text>
+<path d="M 2180 606.0 C 2220.0 606.0, 2220.0 632.0, 2260 632.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="605.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="632.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">XGBoost拒绝</tspan>
+</text>
+<path d="M 1845 560 C 1892.5 560, 1892.5 698.0, 1940 698.0" fill="none" stroke="#0891b2" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="661.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#0891b2" stroke-width="2.5"/>
+<text x="2060.0" y="698.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">浅树正则</tspan>
+</text>
+<path d="M 2180 698.0 C 2220.0 698.0, 2220.0 672.0, 2260 672.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="645.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="672.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">d3/d4/d5拒绝</tspan>
+</text>
+<path d="M 2180 698.0 C 2220.0 698.0, 2220.0 724.0, 2260 724.0" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="697.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#0891b2" stroke-width="1.8"/>
+<text x="2355.0" y="724.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">未改善冠军</tspan>
+</text>
+<path d="M 1530 900 C 1547.5 900, 1547.5 940, 1565 940" fill="none" stroke="#16a34a" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="1565" y="894.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#16a34a" stroke-width="4" filter="url(#shadow)"/>
+<text x="1705.0" y="940" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="1705.0" dy="0.0emem">特征工程路线</tspan>
+</text>
+<path d="M 1845 940 C 1892.5 940, 1892.5 764.0, 1940 764.0" fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="727.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+<text x="2060.0" y="764.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">边界预测值</tspan>
+</text>
+<path d="M 2180 764.0 C 2220.0 764.0, 2220.0 738.0, 2260 738.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="711.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="738.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">负荷/风光/联络线</tspan>
+</text>
+<path d="M 2180 764.0 C 2220.0 764.0, 2220.0 790.0, 2260 790.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="763.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="790.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">水电/非市场机组</tspan>
+</text>
+<path d="M 1845 940 C 1892.5 940, 1892.5 852.0, 1940 852.0" fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="815.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+<text x="2060.0" y="852.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">竞价空间</tspan>
+</text>
+<path d="M 2180 852.0 C 2220.0 852.0, 2220.0 826.0, 2260 826.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="799.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="826.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">bid_space全局不强</tspan>
+</text>
+<path d="M 2180 852.0 C 2220.0 852.0, 2220.0 878.0, 2260 878.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="851.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="878.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">适合作辅助信号</tspan>
+</text>
+<path d="M 1845 940 C 1892.5 940, 1892.5 940.0, 1940 940.0" fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="903.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+<text x="2060.0" y="940.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">天气NWP</tspan>
+</text>
+<path d="M 2180 940.0 C 2220.0 940.0, 2220.0 888.0, 2260 888.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="861.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="888.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">全网格拒绝</tspan>
+</text>
+<path d="M 2180 940.0 C 2220.0 940.0, 2220.0 940.0, 2260 940.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="913.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="940.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">core/inter拒绝</tspan>
+</text>
+<path d="M 2180 940.0 C 2220.0 940.0, 2220.0 992.0, 2260 992.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="965.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="992.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">时间对齐已审计</tspan>
+</text>
+<path d="M 1845 940 C 1892.5 940, 1892.5 1028.0, 1940 1028.0" fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="991.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+<text x="2060.0" y="1028.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">日历/时间</tspan>
+</text>
+<path d="M 2180 1028.0 C 2220.0 1028.0, 2220.0 1002.0, 2260 1002.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="975.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="1002.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">holiday线上弱</tspan>
+</text>
+<path d="M 2180 1028.0 C 2220.0 1028.0, 2220.0 1054.0, 2260 1054.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1027.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="1054.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">weekly/lag不稳</tspan>
+</text>
+<path d="M 1845 940 C 1892.5 940, 1892.5 1116.0, 1940 1116.0" fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1079.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+<text x="2060.0" y="1116.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">误差增强</tspan>
+</text>
+<path d="M 2180 1116.0 C 2220.0 1116.0, 2220.0 1090.0, 2260 1090.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1063.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="1090.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">feaug拒绝</tspan>
+</text>
+<path d="M 2180 1116.0 C 2220.0 1116.0, 2220.0 1142.0, 2260 1142.0" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1115.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#16a34a" stroke-width="1.8"/>
+<text x="2355.0" y="1142.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">均值和尾部变差</tspan>
+</text>
+<path d="M 1530 900 C 1547.5 900, 1547.5 1340, 1565 1340" fill="none" stroke="#ea580c" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="1565" y="1294.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#ea580c" stroke-width="4" filter="url(#shadow)"/>
+<text x="1705.0" y="1340" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="1705.0" dy="0.0emem">调度与策略路线</tspan>
+</text>
+<path d="M 1845 1340 C 1892.5 1340, 1892.5 1164.0, 1940 1164.0" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1127.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ea580c" stroke-width="2.5"/>
+<text x="2060.0" y="1164.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">每天交易</tspan>
+</text>
+<path d="M 2180 1164.0 C 2220.0 1164.0, 2220.0 1164.0, 2260 1164.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1137.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1164.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">预测价差最大pair</tspan>
+</text>
+<path d="M 1845 1340 C 1892.5 1340, 1892.5 1252.0, 1940 1252.0" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1215.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ea580c" stroke-width="2.5"/>
+<text x="2060.0" y="1252.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">no-trade/tau</tspan>
+</text>
+<path d="M 2180 1252.0 C 2220.0 1252.0, 2220.0 1226.0, 2260 1226.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1199.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1226.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">过滤赚钱日</tspan>
+</text>
+<path d="M 2180 1252.0 C 2220.0 1252.0, 2220.0 1278.0, 2260 1278.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1251.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1278.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">拒绝</tspan>
+</text>
+<path d="M 1845 1340 C 1892.5 1340, 1892.5 1340.0, 1940 1340.0" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1303.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ea580c" stroke-width="2.5"/>
+<text x="2060.0" y="1340.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">TopK rerank</tspan>
+</text>
+<path d="M 2180 1340.0 C 2220.0 1340.0, 2220.0 1314.0, 2260 1314.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1287.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1314.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">top10 oracle +737/日</tspan>
+</text>
+<path d="M 2180 1340.0 C 2220.0 1340.0, 2220.0 1366.0, 2260 1366.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1339.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1366.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">learned reranker拒绝</tspan>
+</text>
+<path d="M 1845 1340 C 1892.5 1340, 1892.5 1428.0, 1940 1428.0" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1391.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ea580c" stroke-width="2.5"/>
+<text x="2060.0" y="1428.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">坏日动作</tspan>
+</text>
+<path d="M 2180 1428.0 C 2220.0 1428.0, 2220.0 1402.0, 2260 1402.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1375.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1402.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">换rank2/3等</tspan>
+</text>
+<path d="M 2180 1428.0 C 2220.0 1428.0, 2220.0 1454.0, 2260 1454.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1427.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1454.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">+0.86/日不足</tspan>
+</text>
+<path d="M 1845 1340 C 1892.5 1340, 1892.5 1516.0, 1940 1516.0" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="1940" y="1479.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ea580c" stroke-width="2.5"/>
+<text x="2060.0" y="1516.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="2060.0" dy="0.0emem">家族fallback</tspan>
+</text>
+<path d="M 2180 1516.0 C 2220.0 1516.0, 2220.0 1490.0, 2260 1490.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1463.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1490.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">oracle +982/日</tspan>
+</text>
+<path d="M 2180 1516.0 C 2220.0 1516.0, 2220.0 1542.0, 2260 1542.0" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="2260" y="1515.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8"/>
+<text x="2355.0" y="1542.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="2355.0" dy="0.0emem">规则 -56.8/日拒绝</tspan>
+</text>
+<path d="M 1070 900 C 1052.5 900, 1052.5 250, 1035 250" fill="none" stroke="#7c3aed" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="755" y="204.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#7c3aed" stroke-width="4" filter="url(#shadow)"/>
+<text x="895.0" y="250" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="895.0" dy="0.0emem">目标与训练策略</tspan>
+</text>
+<path d="M 755 250 C 707.5 250, 707.5 112.0, 660 112.0" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="75.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="540.0" y="112.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">绝对价格</tspan>
+</text>
+<path d="M 420 112.0 C 370.0 112.0, 370.0 86.0, 320 86.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="59.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="86.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">当前主线</tspan>
+</text>
+<path d="M 420 112.0 C 370.0 112.0, 370.0 138.0, 320 138.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="111.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="138.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">直接服务价差</tspan>
+</text>
+<path d="M 755 250 C 707.5 250, 707.5 204.0, 660 204.0" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="167.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="540.0" y="204.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">形状目标</tspan>
+</text>
+<path d="M 420 204.0 C 370.0 204.0, 370.0 178.0, 320 178.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="151.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="178.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">zscore/rank尝试</tspan>
+</text>
+<path d="M 420 204.0 C 370.0 204.0, 370.0 230.0, 320 230.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="203.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="230.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">centered拒绝</tspan>
+</text>
+<path d="M 755 250 C 707.5 250, 707.5 296.0, 660 296.0" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="259.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="540.0" y="296.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">鲁棒loss</tspan>
+</text>
+<path d="M 420 296.0 C 370.0 296.0, 370.0 270.0, 320 270.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="243.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="270.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">L1/L2/Huber</tspan>
+</text>
+<path d="M 420 296.0 C 370.0 296.0, 370.0 322.0, 320 322.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="295.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="322.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">未超过冠军</tspan>
+</text>
+<path d="M 755 250 C 707.5 250, 707.5 388.0, 660 388.0" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="351.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="540.0" y="388.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">训练窗口</tspan>
+</text>
+<path d="M 420 388.0 C 370.0 388.0, 370.0 362.0, 320 362.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="335.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="362.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">all/180/90天</tspan>
+</text>
+<path d="M 420 388.0 C 370.0 388.0, 370.0 414.0, 320 414.0" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="387.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="225.0" y="414.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">冬季权重不稳</tspan>
+</text>
+<path d="M 1070 900 C 1052.5 900, 1052.5 640, 1035 640" fill="none" stroke="#db2777" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="755" y="594.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#db2777" stroke-width="4" filter="url(#shadow)"/>
+<text x="895.0" y="640" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="895.0" dy="0.0emem">窗口与E2E路线</tspan>
+</text>
+<path d="M 755 640 C 707.5 640, 707.5 502.0, 660 502.0" fill="none" stroke="#db2777" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="465.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#db2777" stroke-width="2.5"/>
+<text x="540.0" y="502.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">89窗口均价</tspan>
+</text>
+<path d="M 420 502.0 C 370.0 502.0, 370.0 476.0, 320 476.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="449.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="476.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">2小时滑动窗口</tspan>
+</text>
+<path d="M 420 502.0 C 370.0 502.0, 370.0 528.0, 320 528.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="501.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="528.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">排序极值不准</tspan>
+</text>
+<path d="M 755 640 C 707.5 640, 707.5 594.0, 660 594.0" fill="none" stroke="#db2777" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="557.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#db2777" stroke-width="2.5"/>
+<text x="540.0" y="594.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">pair spread</tspan>
+</text>
+<path d="M 420 594.0 C 370.0 594.0, 370.0 568.0, 320 568.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="541.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="568.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">直接预测价差</tspan>
+</text>
+<path d="M 420 594.0 C 370.0 594.0, 370.0 620.0, 320 620.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="593.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="620.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">全局替代拒绝</tspan>
+</text>
+<path d="M 755 640 C 707.5 640, 707.5 686.0, 660 686.0" fill="none" stroke="#db2777" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="649.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#db2777" stroke-width="2.5"/>
+<text x="540.0" y="686.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">E2E策略</tspan>
+</text>
+<path d="M 420 686.0 C 370.0 686.0, 370.0 660.0, 320 660.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="633.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="660.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">方向讨论过</tspan>
+</text>
+<path d="M 420 686.0 C 370.0 686.0, 370.0 712.0, 320 712.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="685.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="712.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">暂未超过点预测</tspan>
+</text>
+<path d="M 755 640 C 707.5 640, 707.5 778.0, 660 778.0" fill="none" stroke="#db2777" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="741.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#db2777" stroke-width="2.5"/>
+<text x="540.0" y="778.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">结论</tspan>
+</text>
+<path d="M 420 778.0 C 370.0 778.0, 370.0 752.0, 320 752.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="725.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="752.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">可做辅助</tspan>
+</text>
+<path d="M 420 778.0 C 370.0 778.0, 370.0 804.0, 320 804.0" fill="none" stroke="#db2777" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="777.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#db2777" stroke-width="1.8"/>
+<text x="225.0" y="804.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">不做主线替代</tspan>
+</text>
+<path d="M 1070 900 C 1052.5 900, 1052.5 1020, 1035 1020" fill="none" stroke="#ca8a04" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="755" y="974.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#ca8a04" stroke-width="4" filter="url(#shadow)"/>
+<text x="895.0" y="1020" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="895.0" dy="0.0emem">诊断与风控</tspan>
+</text>
+<path d="M 755 1020 C 707.5 1020, 707.5 882.0, 660 882.0" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="845.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ca8a04" stroke-width="2.5"/>
+<text x="540.0" y="882.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">daily error</tspan>
+</text>
+<path d="M 420 882.0 C 370.0 882.0, 370.0 830.0, 320 830.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="803.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="830.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">高regret日</tspan>
+</text>
+<path d="M 420 882.0 C 370.0 882.0, 370.0 882.0, 320 882.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="855.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="882.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">亏损日</tspan>
+</text>
+<path d="M 420 882.0 C 370.0 882.0, 370.0 934.0, 320 934.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="907.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="934.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">charge/discharge gap</tspan>
+</text>
+<path d="M 755 1020 C 707.5 1020, 707.5 974.0, 660 974.0" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="937.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ca8a04" stroke-width="2.5"/>
+<text x="540.0" y="974.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">特征重要性</tspan>
+</text>
+<path d="M 420 974.0 C 370.0 974.0, 370.0 922.0, 320 922.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="895.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="922.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">gain/split</tspan>
+</text>
+<path d="M 420 974.0 C 370.0 974.0, 370.0 974.0, 320 974.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="947.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="974.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">permutation</tspan>
+</text>
+<path d="M 420 974.0 C 370.0 974.0, 370.0 1026.0, 320 1026.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="999.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1026.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">删特征回测</tspan>
+</text>
+<path d="M 755 1020 C 707.5 1020, 707.5 1066.0, 660 1066.0" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1029.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ca8a04" stroke-width="2.5"/>
+<text x="540.0" y="1066.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">bid_space诊断</tspan>
+</text>
+<path d="M 420 1066.0 C 370.0 1066.0, 370.0 1040.0, 320 1040.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1013.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1040.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">月/时段热力图</tspan>
+</text>
+<path d="M 420 1066.0 C 370.0 1066.0, 370.0 1092.0, 320 1092.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1065.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1092.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">误差 vs 坏日</tspan>
+</text>
+<path d="M 755 1020 C 707.5 1020, 707.5 1158.0, 660 1158.0" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1121.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#ca8a04" stroke-width="2.5"/>
+<text x="540.0" y="1158.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">线上风险</tspan>
+</text>
+<path d="M 420 1158.0 C 370.0 1158.0, 370.0 1106.0, 320 1106.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1079.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1106.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">all5fold</tspan>
+</text>
+<path d="M 420 1158.0 C 370.0 1158.0, 370.0 1158.0, 320 1158.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1131.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1158.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">Jan-Feb-like</tspan>
+</text>
+<path d="M 420 1158.0 C 370.0 1158.0, 370.0 1210.0, 320 1210.0" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1183.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#ca8a04" stroke-width="1.8"/>
+<text x="225.0" y="1210.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">test-like weighted</tspan>
+</text>
+<path d="M 1070 900 C 1052.5 900, 1052.5 1360, 1035 1360" fill="none" stroke="#475569" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="755" y="1314.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#475569" stroke-width="4" filter="url(#shadow)"/>
+<text x="895.0" y="1360" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="895.0" dy="0.0emem">工程协作harness</tspan>
+</text>
+<path d="M 755 1360 C 707.5 1360, 707.5 1222.0, 660 1222.0" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1185.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#475569" stroke-width="2.5"/>
+<text x="540.0" y="1222.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">GitHub协作</tspan>
+</text>
+<path d="M 420 1222.0 C 370.0 1222.0, 370.0 1196.0, 320 1196.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1169.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1196.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">本地开发</tspan>
+</text>
+<path d="M 420 1222.0 C 370.0 1222.0, 370.0 1248.0, 320 1248.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1221.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1248.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">AutoDL拉取运行</tspan>
+</text>
+<path d="M 755 1360 C 707.5 1360, 707.5 1314.0, 660 1314.0" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1277.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#475569" stroke-width="2.5"/>
+<text x="540.0" y="1314.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">固定入口</tspan>
+</text>
+<path d="M 420 1314.0 C 370.0 1314.0, 370.0 1288.0, 320 1288.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1261.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1288.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">make backtest</tspan>
+</text>
+<path d="M 420 1314.0 C 370.0 1314.0, 370.0 1340.0, 320 1340.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1313.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1340.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">make submit/tune</tspan>
+</text>
+<path d="M 755 1360 C 707.5 1360, 707.5 1406.0, 660 1406.0" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1369.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#475569" stroke-width="2.5"/>
+<text x="540.0" y="1406.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">实验台账</tspan>
+</text>
+<path d="M 420 1406.0 C 370.0 1406.0, 370.0 1354.0, 320 1354.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1327.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1354.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">experiment_index</tspan>
+</text>
+<path d="M 420 1406.0 C 370.0 1406.0, 370.0 1406.0, 320 1406.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1379.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1406.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">experiment_map</tspan>
+</text>
+<path d="M 420 1406.0 C 370.0 1406.0, 370.0 1458.0, 320 1458.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1431.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1458.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">risk dashboard</tspan>
+</text>
+<path d="M 755 1360 C 707.5 1360, 707.5 1498.0, 660 1498.0" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1461.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#475569" stroke-width="2.5"/>
+<text x="540.0" y="1498.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">质量门禁</tspan>
+</text>
+<path d="M 420 1498.0 C 370.0 1498.0, 370.0 1446.0, 320 1446.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1419.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1446.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">fold-safe</tspan>
+</text>
+<path d="M 420 1498.0 C 370.0 1498.0, 370.0 1498.0, 320 1498.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1471.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1498.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">泄露检查</tspan>
+</text>
+<path d="M 420 1498.0 C 370.0 1498.0, 370.0 1550.0, 320 1550.0" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1523.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="1.8"/>
+<text x="225.0" y="1550.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">格式校验</tspan>
+</text>
+<path d="M 1070 900 C 1052.5 900, 1052.5 1630, 1035 1630" fill="none" stroke="#dc2626" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+<rect x="755" y="1584.0" width="280" height="92" rx="28" fill="#ffffff" stroke="#dc2626" stroke-width="4" filter="url(#shadow)"/>
+<text x="895.0" y="1630" text-anchor="middle" dominant-baseline="middle" class="nodeText medium">
+<tspan x="895.0" dy="-0.575emem">当前结论</tspan>
+<tspan x="895.0" dy="1.15em">下一步方向</tspan>
+</text>
+<path d="M 755 1630 C 707.5 1630, 707.5 1492.0, 660 1492.0" fill="none" stroke="#dc2626" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1455.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
+<text x="540.0" y="1492.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">保留冠军</tspan>
+</text>
+<path d="M 420 1492.0 C 370.0 1492.0, 370.0 1492.0, 320 1492.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1465.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1492.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">不轻易全局替换</tspan>
+</text>
+<path d="M 755 1630 C 707.5 1630, 707.5 1584.0, 660 1584.0" fill="none" stroke="#dc2626" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1547.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
+<text x="540.0" y="1584.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">停止加复杂度</tspan>
+</text>
+<path d="M 420 1584.0 C 370.0 1584.0, 370.0 1558.0, 320 1558.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1531.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1558.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">简单gate/fallback</tspan>
+</text>
+<path d="M 420 1584.0 C 370.0 1584.0, 370.0 1610.0, 320 1610.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1583.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1610.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">全局天气/日历blend</tspan>
+</text>
+<path d="M 755 1630 C 707.5 1630, 707.5 1676.0, 660 1676.0" fill="none" stroke="#dc2626" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1639.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
+<text x="540.0" y="1676.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">仍有空间</tspan>
+</text>
+<path d="M 420 1676.0 C 370.0 1676.0, 370.0 1650.0, 320 1650.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1623.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1650.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">top10 oracle大</tspan>
+</text>
+<path d="M 420 1676.0 C 370.0 1676.0, 370.0 1702.0, 320 1702.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1675.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1702.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">family oracle大</tspan>
+</text>
+<path d="M 755 1630 C 707.5 1630, 707.5 1768.0, 660 1768.0" fill="none" stroke="#dc2626" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+<rect x="420" y="1731.0" width="240" height="74" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
+<text x="540.0" y="1768.0" text-anchor="middle" dominant-baseline="middle" class="nodeText small">
+<tspan x="540.0" dy="0.0emem">下一步</tspan>
+</text>
+<path d="M 420 1768.0 C 370.0 1768.0, 370.0 1742.0, 320 1742.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1715.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1742.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">冬季/test-like局部专家</tspan>
+</text>
+<path d="M 420 1768.0 C 370.0 1768.0, 370.0 1794.0, 320 1794.0" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+<rect x="130" y="1767.0" width="190" height="54" rx="18" fill="#f8fafc" stroke="#dc2626" stroke-width="1.8"/>
+<text x="225.0" y="1794.0" text-anchor="middle" dominant-baseline="middle" class="leafText small">
+<tspan x="225.0" dy="0.0emem">高置信少量修正</tspan>
+</text>
+<rect x="1010" y="40" width="580" height="70" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<text x="1300" y="84" text-anchor="middle" class="muted">分叉式思维导图：主线 / 模型 / 特征 / 目标 / 窗口 / 策略 / 诊断 / 工程</text>
+</svg>

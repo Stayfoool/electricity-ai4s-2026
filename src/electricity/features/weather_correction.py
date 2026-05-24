@@ -128,12 +128,24 @@ def apply_fold_weather_correction(
     *,
     time_col: str,
     train_end: pd.Timestamp,
+    train_start: pd.Timestamp | None = None,
+    valid_start: pd.Timestamp | None = None,
+    valid_end: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
     if not cfg.get("feature_sets", {}).get("weather_correction", False):
         return df
 
     hourly = _prepare_hourly_weather_frame(cfg)
     train_hourly = hourly[hourly["times"] <= train_end.floor("h")].copy()
+    if train_start is not None:
+        train_hourly = train_hourly[
+            train_hourly["times"] >= train_start.floor("h")
+        ].copy()
+    if valid_start is not None and valid_end is not None:
+        outside = (train_hourly["times"] < valid_start.floor("h")) | (
+            train_hourly["times"] > valid_end.floor("h")
+        )
+        train_hourly = train_hourly[outside].copy()
     if train_hourly.empty:
         raise ValueError("empty train split for weather correction")
     model = _train_weather_correction(train_hourly)

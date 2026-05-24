@@ -60,6 +60,9 @@ def fit_bias_table(
     channels: Sequence[str] = CORRECTABLE_CHANNELS,
     time_col: str = "times",
     train_end: pd.Timestamp | str | None = None,
+    train_start: pd.Timestamp | str | None = None,
+    valid_start: pd.Timestamp | str | None = None,
+    valid_end: pd.Timestamp | str | None = None,
     remove_daily_mean: bool = True,
     min_samples_per_bucket: int = 5,
 ) -> pd.DataFrame:
@@ -76,6 +79,11 @@ def fit_bias_table(
     train_end
         Inclusive cutoff. Rows strictly after ``train_end`` are excluded so the
         fit is leak-free for backtest folds. ``None`` uses all rows.
+    train_start
+        Optional inclusive lower bound. Used by same-season folds where
+        training intentionally starts after the validation interval.
+    valid_start, valid_end
+        Optional validation interval to exclude from the fitting rows.
     remove_daily_mean
         If True, subtract the per-day mean of the residual before grouping by
         (hour, month). This isolates the within-day, dispatch-relevant
@@ -93,6 +101,14 @@ def fit_bias_table(
         work = df[df[time_col] <= cutoff].copy()
     else:
         work = df.copy()
+    if train_start is not None:
+        start = pd.Timestamp(train_start)
+        work = work[work[time_col] >= start].copy()
+    if valid_start is not None and valid_end is not None:
+        start = pd.Timestamp(valid_start)
+        end = pd.Timestamp(valid_end)
+        outside = (work[time_col] < start) | (work[time_col] > end)
+        work = work[outside].copy()
 
     if work.empty:
         return pd.DataFrame(columns=["channel", "hour", "month", "bias", "n"])
@@ -222,6 +238,9 @@ def add_bias_correction_features(
     *,
     time_col: str = "times",
     train_end: pd.Timestamp | str | None = None,
+    train_start: pd.Timestamp | str | None = None,
+    valid_start: pd.Timestamp | str | None = None,
+    valid_end: pd.Timestamp | str | None = None,
 ) -> pd.DataFrame:
     """Convenience wrapper used by feature pipelines.
 
@@ -255,6 +274,9 @@ def add_bias_correction_features(
         channels=channels,
         time_col=time_col,
         train_end=train_end,
+        train_start=train_start,
+        valid_start=valid_start,
+        valid_end=valid_end,
         remove_daily_mean=remove_daily_mean,
         min_samples_per_bucket=min_samples,
     )
@@ -274,6 +296,9 @@ def apply_fold_bias_correction(
     *,
     time_col: str = "times",
     train_end: pd.Timestamp | str | None,
+    train_start: pd.Timestamp | str | None = None,
+    valid_start: pd.Timestamp | str | None = None,
+    valid_end: pd.Timestamp | str | None = None,
 ) -> pd.DataFrame:
     """Fold-aware wrapper. Drops any pre-existing debiased columns then
     fits a fresh bias table on rows ``<= train_end`` and applies it.
@@ -290,7 +315,15 @@ def apply_fold_bias_correction(
     if "net_load_fct" in frame.columns:
         drop_cols.append("net_load_fct")
     work = frame.drop(columns=drop_cols) if drop_cols else frame.copy()
-    return add_bias_correction_features(work, spec, time_col=time_col, train_end=train_end)
+    return add_bias_correction_features(
+        work,
+        spec,
+        time_col=time_col,
+        train_end=train_end,
+        train_start=train_start,
+        valid_start=valid_start,
+        valid_end=valid_end,
+    )
 
 
 def bias_correction_feature_columns(cfg: dict) -> list[str]:

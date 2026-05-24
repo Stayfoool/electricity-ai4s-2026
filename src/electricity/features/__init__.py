@@ -8,6 +8,7 @@ from .bias_correction import (
     bias_correction_feature_columns,
     fit_bias_table,
 )
+from .forecast_error_augmentation import apply_forecast_error_augmentation
 from .time_features import (
     BID_SPACE_FEATURES,
     BUSINESS_FEATURES,
@@ -77,6 +78,7 @@ __all__ = [
     "add_time_features",
     "add_weekly_relative_features",
     "apply_fold_weather_correction",
+    "apply_forecast_error_augmentation",
     "apply_bias_correction",
     "apply_fold_bias_correction",
     "bias_correction_feature_columns",

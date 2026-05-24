@@ -162,6 +162,8 @@ NWP_RESIDUAL_SOURCE_FEATURES = [
 
 NWP_RESIDUAL_FEATURES = [f"{col}_mh_resid" for col in NWP_RESIDUAL_SOURCE_FEATURES]
 
+UNSAFE_FEATURE_NAME_PARTS = ("实际值", "实时价格")
+
 FEATURE_GROUPS = {
     "business_features": BUSINESS_FEATURES,
     "deviation_features": DEVIATION_FEATURES,
@@ -656,4 +658,17 @@ def feature_columns(cfg: dict) -> list[str]:
         from electricity.features.weather_correction import weather_correction_feature_columns
 
         columns += weather_correction_feature_columns(cfg)
+    target_col = cfg.get("data", {}).get("target_col")
+    unsafe = [
+        col
+        for col in columns
+        if (target_col is not None and col == target_col)
+        or col.startswith("target_")
+        or any(part in col for part in UNSAFE_FEATURE_NAME_PARTS)
+    ]
+    if unsafe:
+        raise ValueError(
+            "model feature columns contain label/actual-value leakage candidates: "
+            f"{sorted(set(unsafe))}"
+        )
     return columns

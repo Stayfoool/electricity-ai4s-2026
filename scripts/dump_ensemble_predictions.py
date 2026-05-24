@@ -20,6 +20,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from electricity.eval.backtest import _fold_bounds, _fold_train_frame
 from electricity.eval.segmented_utils import (
     add_slot_and_segment,
     predict_segmented_fold,
@@ -56,16 +57,6 @@ def add_target_absolute(df: pd.DataFrame, *, target_col: str) -> pd.DataFrame:
     return out
 
 
-def fold_train_frame(
-    df: pd.DataFrame, *, time_col: str, train_end: pd.Timestamp, train_window_days: int | None
-) -> pd.DataFrame:
-    out = df[df[time_col] <= train_end]
-    if train_window_days is not None:
-        start = train_end - pd.Timedelta(days=train_window_days) + pd.Timedelta(seconds=1)
-        out = out[out[time_col] >= start]
-    return out.copy()
-
-
 def member_predict_fold(
     *,
     spec: dict,
@@ -76,14 +67,24 @@ def member_predict_fold(
     fold: dict,
 ) -> tuple[np.ndarray, pd.DataFrame]:
     train_window_days = spec["model"].get("train_window_days")
-    train_end = pd.Timestamp(fold["train_end"])
-    valid_start = pd.Timestamp(fold["valid_start"])
-    valid_end = pd.Timestamp(fold["valid_end"])
+    bounds = _fold_bounds(fold)
 
-    train_df = fold_train_frame(
-        frame, time_col=time_col, train_end=train_end, train_window_days=train_window_days
+    train_df = _fold_train_frame(
+        frame,
+        time_col=time_col,
+        train_end=bounds.train_end,
+        train_window_days=train_window_days,
+        train_start=bounds.train_start,
+        valid_start=bounds.valid_start,
+        valid_end=bounds.valid_end,
     )
-    valid_df = frame[(frame[time_col] >= valid_start) & (frame[time_col] <= valid_end)].copy()
+    valid_df = frame[
+        (frame[time_col] >= bounds.valid_start) & (frame[time_col] <= bounds.valid_end)
+    ].copy()
+    if train_df.empty or valid_df.empty:
+        raise ValueError(
+            f"empty train/valid split for fold={fold['name']} member={spec['model']['name']}"
+        )
 
     boundaries = spec["model"].get("segment_boundaries")
     if boundaries is not None:

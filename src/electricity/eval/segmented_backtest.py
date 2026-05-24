@@ -14,6 +14,7 @@ from electricity.eval.backtest import (
     _add_target_variants,
     _daily_curve_z_rmse,
     _evaluate_dispatch,
+    _fold_bounds,
     _fold_train_frame,
     _target_col_for_mode,
 )
@@ -72,21 +73,37 @@ def run_segmented_backtest(cfg: dict, *, config_path: str) -> Path:
 
         for fold in cfg["folds"]:
             print(f"running_fold={fold['name']}", flush=True)
-            train_end = pd.Timestamp(fold["train_end"])
-            valid_start = pd.Timestamp(fold["valid_start"])
-            valid_end = pd.Timestamp(fold["valid_end"])
+            bounds = _fold_bounds(fold)
+            train_end = bounds.train_end
+            valid_start = bounds.valid_start
+            valid_end = bounds.valid_end
 
             fold_df = apply_fold_bias_correction(
-                df, build_spec, time_col=time_col, train_end=train_end
+                df,
+                build_spec,
+                time_col=time_col,
+                train_end=train_end,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             fold_df = apply_fold_weather_correction(
-                fold_df, build_spec, time_col=time_col, train_end=train_end
+                fold_df,
+                build_spec,
+                time_col=time_col,
+                train_end=train_end,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             train_df = _fold_train_frame(
                 fold_df,
                 time_col=time_col,
                 train_end=train_end,
                 train_window_days=train_window_days,
+                train_start=bounds.train_start,
+                valid_start=valid_start,
+                valid_end=valid_end,
             )
             valid_df = fold_df[
                 (fold_df[time_col] >= valid_start) & (fold_df[time_col] <= valid_end)

@@ -105,6 +105,22 @@ def test_fit_bias_table_excludes_rows_after_train_end():
     )
 
 
+def test_fit_bias_table_excludes_validation_interval() -> None:
+    df = _make_synthetic_frame(n_days=90)
+    table = fit_bias_table(
+        df,
+        train_end=pd.Timestamp("2025-03-31 23:59:59"),
+        train_start=pd.Timestamp("2025-03-01 00:00:00"),
+        valid_start=pd.Timestamp("2025-01-01 00:00:00"),
+        valid_end=pd.Timestamp("2025-01-31 23:59:59"),
+    )
+    table_ref = fit_bias_table(df[df["times"] >= pd.Timestamp("2025-03-01 00:00:00")])
+    pd.testing.assert_frame_equal(
+        table.sort_values(["channel", "hour", "month"]).reset_index(drop=True),
+        table_ref.sort_values(["channel", "hour", "month"]).reset_index(drop=True),
+    )
+
+
 def test_remove_daily_mean_yields_cleaner_within_day_signal():
     """Inject random daily offsets and check that remove_daily_mean=True
     produces a bias profile whose hour-to-hour variation closely matches the

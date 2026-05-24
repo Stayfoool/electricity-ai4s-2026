@@ -8,6 +8,24 @@ import pandas as pd
 from electricity.models.lgbm import predict_lgbm, train_lgbm, train_lgbm_full
 from electricity.models.linear import predict_linear, train_linear, train_linear_full
 
+UNSAFE_FEATURE_NAME_PARTS = ("实际值", "实时价格")
+
+
+def validate_model_features(feature_cols: list[str], *, target_col: str | None = None) -> None:
+    """Fail fast if a model input column looks like a label or actual value."""
+    unsafe = [
+        col
+        for col in feature_cols
+        if (target_col is not None and col == target_col)
+        or col.startswith("target_")
+        or any(part in col for part in UNSAFE_FEATURE_NAME_PARTS)
+    ]
+    if unsafe:
+        raise ValueError(
+            "model feature columns contain label/actual-value leakage candidates: "
+            f"{sorted(set(unsafe))}"
+        )
+
 
 def model_backend(cfg: dict) -> str:
     backend = cfg["model"].get("backend")
@@ -31,6 +49,7 @@ def train_model(
     target_col: str,
     cfg: dict,
 ) -> Any:
+    validate_model_features(feature_cols, target_col=target_col)
     backend = model_backend(cfg)
     if backend == "lightgbm":
         return train_lgbm(
@@ -74,6 +93,7 @@ def train_model_full(
     target_col: str,
     cfg: dict,
 ) -> Any:
+    validate_model_features(feature_cols, target_col=target_col)
     backend = model_backend(cfg)
     if backend == "lightgbm":
         return train_lgbm_full(train_df, feature_cols=feature_cols, target_col=target_col, cfg=cfg)
@@ -102,6 +122,7 @@ def train_model_full(
 
 
 def predict_model(model: Any, df: pd.DataFrame, feature_cols: list[str], cfg: dict) -> np.ndarray:
+    validate_model_features(feature_cols, target_col=cfg.get("data", {}).get("target_col"))
     backend = model_backend(cfg)
     if backend == "lightgbm":
         return predict_lgbm(model, df, feature_cols)

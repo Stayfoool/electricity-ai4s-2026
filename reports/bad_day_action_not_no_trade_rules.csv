@@ -1,0 +1,6 @@
+heldout_fold,selected_from_train,action,feature,op,quantile,threshold,train_mean_lift_vs_anchor,train_loss_days,train_anchor_loss_days,train_changed_days,train_negative_lift_days,valid_mean_lift_vs_anchor,valid_loss_days,valid_anchor_loss_days,valid_changed_days,valid_negative_lift_days,train_rows,valid_rows
+valid_2025_09,True,aux_bidspace_rank_top3,top10_support_count_mean,<=,0.2,1.6,99.81475474028987,3.0,4.0,20.0,2.0,5.18039327178784,0.0,0.0,2.0,0.0,148,28
+valid_2025_10,True,aux_margin_combo_top3,top10_support_count_mean,<=,0.2,1.7,70.87510304554235,1.0,1.0,19.0,3.0,-4.652792999345541,3.0,3.0,5.0,1.0,145,31
+valid_2025_11,True,aux_bidspace_rank_top3,top10_support_count_mean,<=,0.2,1.6,102.2178966976781,3.0,4.0,19.0,1.0,-0.20594015626811596,0.0,0.0,3.0,1.0,146,30
+valid_2025_12,True,aux_bidspace_rank_top3,top10_support_count_mean,<=,0.2,1.6800000000000002,102.00106457234713,2.0,3.0,19.0,1.0,4.112269360729882,1.0,1.0,3.0,1.0,145,31
+valid_2025_jan_feb,True,anchor_rank2,top10_charge_start_range,<=,0.05,2.0,83.85611156803041,4.0,4.0,8.0,1.0,0.5328212977157124,0.0,0.0,3.0,1.0,120,56

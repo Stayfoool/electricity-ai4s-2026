@@ -24,6 +24,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from electricity.eval.backtest import _fold_bounds
+
 BLOCK = 8
 N_TC = 81  # 0..80
 N_TD = 81  # 8..88
@@ -57,10 +59,22 @@ def daily_oracle(prices_96: np.ndarray) -> tuple[int, int, float]:
 
 
 def compute_oracle_distribution(
-    train_labels: pd.DataFrame, *, time_col: str, target_col: str, train_end: pd.Timestamp
+    train_labels: pd.DataFrame,
+    *,
+    time_col: str,
+    target_col: str,
+    train_end: pd.Timestamp,
+    train_start: pd.Timestamp | None = None,
+    valid_start: pd.Timestamp | None = None,
+    valid_end: pd.Timestamp | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Counts of oracle charge / discharge slots over training days <= train_end."""
     df = train_labels[train_labels[time_col] <= train_end].copy()
+    if train_start is not None:
+        df = df[df[time_col] >= train_start].copy()
+    if valid_start is not None and valid_end is not None:
+        outside = (df[time_col] < valid_start) | (df[time_col] > valid_end)
+        df = df[outside].copy()
     df["date"] = df[time_col].dt.normalize()
     df["slot"] = df[time_col].dt.hour * 4 + df[time_col].dt.minute // 15
 
@@ -133,9 +147,15 @@ def evaluate_grid(
     # Build per-fold log priors
     fold_priors: dict[str, tuple[np.ndarray, np.ndarray]] = {}
     for fold in folds:
-        train_end = pd.Timestamp(fold["train_end"])
+        bounds = _fold_bounds(fold)
         cc, cd = compute_oracle_distribution(
-            labels, time_col=time_col, target_col=target_col, train_end=train_end
+            labels,
+            time_col=time_col,
+            target_col=target_col,
+            train_end=bounds.train_end,
+            train_start=bounds.train_start,
+            valid_start=bounds.valid_start,
+            valid_end=bounds.valid_end,
         )
         fold_priors[fold["name"]] = (
             smoothed_log_prior(cc, alpha),

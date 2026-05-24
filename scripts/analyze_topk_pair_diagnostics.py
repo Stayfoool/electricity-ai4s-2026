@@ -10,6 +10,7 @@ from electricity.data import load_train_frame
 from electricity.dispatch import rank_day_pairs
 from electricity.eval.backtest import (
     _add_target_variants,
+    _fold_bounds,
     _fold_train_frame,
     _model_spec_frame,
     _predict_member_fold,
@@ -71,14 +72,18 @@ def predict_single_config(cfg: dict) -> pd.DataFrame:
 
     rows: list[pd.DataFrame] = []
     for fold in cfg["folds"]:
-        train_end = pd.Timestamp(fold["train_end"])
-        valid_start = pd.Timestamp(fold["valid_start"])
-        valid_end = pd.Timestamp(fold["valid_end"])
+        bounds = _fold_bounds(fold)
+        train_end = bounds.train_end
+        valid_start = bounds.valid_start
+        valid_end = bounds.valid_end
         train_df = _fold_train_frame(
             df,
             time_col=time_col,
             train_end=train_end,
             train_window_days=train_window_days,
+            train_start=bounds.train_start,
+            valid_start=valid_start,
+            valid_end=valid_end,
         )
         valid_df = df[(df[time_col] >= valid_start) & (df[time_col] <= valid_end)].copy()
         valid_df = valid_df.reset_index(drop=True)

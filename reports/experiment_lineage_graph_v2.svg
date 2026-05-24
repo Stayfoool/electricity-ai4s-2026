@@ -1,0 +1,402 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2800" height="1900" viewBox="0 0 2800 1900">
+<defs>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+    <path d="M2,2 L10,6 L2,10 Z" fill="#334155" />
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+  <style>
+    .bg { fill: #f8fafc; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 850; fill: #0f172a; font-size: 44px; }
+    .subtitle { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 650; fill: #64748b; font-size: 23px; }
+    .node { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 760; fill: #0f172a; font-size: 22px; }
+    .label { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 720; fill: #475569; font-size: 17px; }
+    .stage { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", sans-serif; font-weight: 850; fill: #334155; font-size: 25px; }
+  </style>
+</defs>
+<rect class="bg" width="2800" height="1900"/>
+<rect x="40" y="60" width="2290" height="180" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="1185.0" y="95" text-anchor="middle" class="stage">全局共用条件：不是某个实验节点，所有相关方案默认继承</text>
+<rect x="40" y="260" width="450" height="900" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="265.0" y="295" text-anchor="middle" class="stage">输入包/派生特征</text>
+<rect x="535" y="260" width="500" height="1450" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="785.0" y="295" text-anchor="middle" class="stage">模型实验</text>
+<rect x="1120" y="260" width="500" height="1450" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="1370.0" y="295" text-anchor="middle" class="stage">冠军路径与替代目标</text>
+<rect x="1690" y="260" width="500" height="1450" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="1940.0" y="295" text-anchor="middle" class="stage">策略/重排/诊断实验</text>
+<rect x="2260" y="260" width="500" height="1450" rx="30" fill="#ffffff" opacity="0.48" stroke="#e2e8f0" stroke-width="2"/>
+<text x="2510.0" y="295" text-anchor="middle" class="stage">结论与下一步</text>
+<text x="1400" y="1810" text-anchor="middle" class="title">实验谱系图 v2：全局变量、数据包、模型节点与交叉复用关系</text>
+<text x="1400" y="1850" text-anchor="middle" class="subtitle">每个模型节点标明输入包/目标/窗口；顶层为全局共用条件；虚线表示失败路线转辅助或跨路线复用</text>
+<path d="M 510 149.0 C 295.0 149.0, 295.0 364.0, 80 364.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="262.0" y="233.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="295.0" y="252.5" text-anchor="middle" class="label">共用</text>
+<path d="M 550 149.0 C 495.0 149.0, 495.0 364.0, 440 364.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="462.0" y="233.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="495.0" y="252.5" text-anchor="middle" class="label">全局加入</text>
+<path d="M 510 149.0 C 295.0 149.0, 295.0 529.0, 80 529.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="262.0" y="316.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="295.0" y="335.0" text-anchor="middle" class="label">派生</text>
+<path d="M 510 149.0 C 295.0 149.0, 295.0 709.0, 80 709.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="242.5" y="406.0" width="105" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="295.0" y="425.0" text-anchor="middle" class="label">外部NWP对齐</text>
+<path d="M 550 149.0 C 495.0 149.0, 495.0 884.0, 440 884.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="462.0" y="493.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="495.0" y="512.5" text-anchor="middle" class="label">增强</text>
+<path d="M 1820 149.0 C 1777.5 149.0, 1777.5 1630.0, 1735 1630.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1744.5" y="866.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1777.5" y="885.5" text-anchor="middle" class="label">风险评估</text>
+<path d="M 440 364.0 C 515.0 364.0, 515.0 355.0, 590 355.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="336.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="355.5" text-anchor="middle" class="label">A</text>
+<path d="M 440 364.0 C 515.0 364.0, 515.0 510.0, 590 510.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="414.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="433.0" text-anchor="middle" class="label">A</text>
+<path d="M 440 364.0 C 515.0 364.0, 515.0 674.0, 590 674.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="496.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="515.0" text-anchor="middle" class="label">A</text>
+<path d="M 440 529.0 C 515.0 529.0, 515.0 861.0, 590 861.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="477.5" y="672.0" width="75" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="691.0" text-anchor="middle" class="label">A+B子集</text>
+<path d="M 440 364.0 C 515.0 364.0, 515.0 1049.0, 590 1049.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="683.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="702.5" text-anchor="middle" class="label">A</text>
+<path d="M 440 364.0 C 515.0 364.0, 515.0 1229.0, 590 1229.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="773.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="792.5" text-anchor="middle" class="label">A</text>
+<path d="M 440 709.0 C 515.0 709.0, 515.0 1409.0, 590 1409.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="1036.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="1055.0" text-anchor="middle" class="label">A+C</text>
+<path d="M 440 884.0 C 515.0 884.0, 515.0 1589.0, 590 1589.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="482.0" y="1213.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="515.0" y="1232.5" text-anchor="middle" class="label">A+D</text>
+<path d="M 440 364.0 C 802.5 364.0, 802.5 1144.0, 1165 1144.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="757.5" y="731.0" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="802.5" y="750.0" text-anchor="middle" class="label">A+窗口聚合</text>
+<path d="M 440 364.0 C 802.5 364.0, 802.5 1331.0, 1165 1331.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="742.5" y="824.5" width="120" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="802.5" y="843.5" text-anchor="middle" class="label">A/pair样本</text>
+<path d="M 440 529.0 C 802.5 529.0, 802.5 1331.0, 1165 1331.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="769.5" y="907.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="802.5" y="926.0" text-anchor="middle" class="label">B</text>
+<path d="M 440 709.0 C 802.5 709.0, 802.5 1331.0, 1165 1331.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="769.5" y="997.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="802.5" y="1016.0" text-anchor="middle" class="label">C残差</text>
+<path d="M 440 1039.0 C 802.5 1039.0, 802.5 1672.5, 1165 1672.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="769.5" y="1332.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="802.5" y="1351.75" text-anchor="middle" class="label">A+E</text>
+<path d="M 975 355.0 C 1070.0 355.0, 1070.0 395.0, 1165 395.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1037.0" y="352.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1070.0" y="371.0" text-anchor="middle" class="label">0.25</text>
+<path d="M 975 510.0 C 1070.0 510.0, 1070.0 395.0, 1165 395.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1037.0" y="429.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1070.0" y="448.5" text-anchor="middle" class="label">0.25</text>
+<path d="M 975 674.0 C 1070.0 674.0, 1070.0 395.0, 1165 395.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1037.0" y="511.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1070.0" y="530.5" text-anchor="middle" class="label">0.5</text>
+<path d="M 1555 395.0 C 1360.0 395.0, 1360.0 572.5, 1165 572.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1327.0" y="460.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1360.0" y="479.75" text-anchor="middle" class="label">直接增强</text>
+<path d="M 1555 572.5 C 1360.0 572.5, 1360.0 756.0, 1165 756.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1327.0" y="641.25" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1360.0" y="660.25" text-anchor="middle" class="label">当前主线</text>
+<path d="M 975 861.0 C 1355.0 861.0, 1355.0 1272.5, 1735 1272.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="1043.75" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="1062.75" text-anchor="middle" class="label">top1输入</text>
+<path d="M 975 674.0 C 1355.0 674.0, 1355.0 1272.5, 1735 1272.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="950.25" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="969.25" text-anchor="middle" class="label">top1输入</text>
+<path d="M 975 1049.0 C 1355.0 1049.0, 1355.0 1272.5, 1735 1272.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="1137.75" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="1156.75" text-anchor="middle" class="label">top1输入</text>
+<path d="M 975 1229.0 C 1355.0 1229.0, 1355.0 1272.5, 1735 1272.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="1227.75" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="1246.75" text-anchor="middle" class="label">top1输入</text>
+<path d="M 975 1409.0 C 1355.0 1409.0, 1355.0 1080.0, 1735 1080.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="1221.5" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="1240.5" text-anchor="middle" class="label">失败后转辅助</text>
+<path d="M 440 529.0 C 1087.5 529.0, 1087.5 1080.0, 1735 1080.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1054.5" y="781.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1087.5" y="800.5" text-anchor="middle" class="label">B辅助</text>
+<path d="M 975 1589.0 C 1355.0 1589.0, 1355.0 1630.0, 1735 1630.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1310.0" y="1586.5" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1355.0" y="1605.5" text-anchor="middle" class="label">线上风险暴露</text>
+<path d="M 1555 964.0 C 1360.0 964.0, 1360.0 756.0, 1165 756.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1327.0" y="837.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1360.0" y="856.0" text-anchor="middle" class="label">未替代</text>
+<path d="M 1555 1517.5 C 1360.0 1517.5, 1360.0 756.0, 1165 756.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1327.0" y="1113.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1360.0" y="1132.75" text-anchor="middle" class="label">未替代</text>
+<path d="M 1555 1672.5 C 1645.0 1672.5, 1645.0 1080.0, 1735 1080.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1612.0" y="1353.25" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="1372.25" text-anchor="middle" class="label">风险信号</text>
+<path d="M 1555 1144.0 C 1645.0 1144.0, 1645.0 545.0, 1735 545.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1612.0" y="821.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="840.5" text-anchor="middle" class="label">候选特征</text>
+<path d="M 1555 1331.0 C 1645.0 1331.0, 1645.0 545.0, 1735 545.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1600.0" y="915.0" width="90" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="934.0" text-anchor="middle" class="label">pair特征</text>
+<path d="M 1555 756.0 C 1645.0 756.0, 1645.0 362.5, 1735 362.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1592.5" y="536.25" width="105" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="555.25" text-anchor="middle" class="label">top10候选</text>
+<path d="M 1555 756.0 C 1645.0 756.0, 1645.0 1462.5, 1735 1462.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1612.0" y="1086.25" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="1105.25" text-anchor="middle" class="label">交易门槛</text>
+<path d="M 1555 756.0 C 1645.0 756.0, 1645.0 1630.0, 1735 1630.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.46" marker-end="url(#arrow)" stroke-dasharray="10 8"/>
+<rect x="1612.0" y="1170.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1645.0" y="1189.0" text-anchor="middle" class="label">线上风险</text>
+<path d="M 2140 362.5 C 1937.5 362.5, 1937.5 545.0, 1735 545.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1904.5" y="430.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1937.5" y="449.75" text-anchor="middle" class="label">学习重排</text>
+<path d="M 2140 362.5 C 1937.5 362.5, 1937.5 722.5, 1735 722.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1904.5" y="519.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1937.5" y="538.5" text-anchor="middle" class="label">保守规则</text>
+<path d="M 2140 362.5 C 1937.5 362.5, 1937.5 895.0, 1735 895.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1904.5" y="605.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1937.5" y="624.75" text-anchor="middle" class="label">动作池</text>
+<path d="M 2140 362.5 C 1937.5 362.5, 1937.5 1080.0, 1735 1080.0" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1904.5" y="698.25" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1937.5" y="717.25" text-anchor="middle" class="label">辅助打分</text>
+<path d="M 1555 756.0 C 1932.5 756.0, 1932.5 487.5, 2310 487.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="1899.5" y="598.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="1932.5" y="617.75" text-anchor="middle" class="label">线上最好</text>
+<path d="M 2140 545.0 C 2225.0 545.0, 2225.0 737.5, 2310 737.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2172.5" y="618.25" width="105" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="637.25" text-anchor="middle" class="label">过拟合/无提升</text>
+<path d="M 2140 1462.5 C 2225.0 1462.5, 2225.0 737.5, 2310 737.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2192.0" y="1077.0" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="1096.0" text-anchor="middle" class="label">误过滤</text>
+<path d="M 2140 1080.0 C 2225.0 1080.0, 2225.0 737.5, 2310 737.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2192.0" y="885.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="904.75" text-anchor="middle" class="label">信号不足</text>
+<path d="M 2140 1272.5 C 2225.0 1272.5, 2225.0 1012.5, 2310 1012.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2150.0" y="1119.5" width="150" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="1138.5" text-anchor="middle" class="label">oracle大但规则失败</text>
+<path d="M 2140 362.5 C 2225.0 362.5, 2225.0 1012.5, 2310 1012.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2192.0" y="664.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="683.5" text-anchor="middle" class="label">上限仍大</text>
+<path d="M 2140 1630.0 C 2225.0 1630.0, 2225.0 1292.5, 2310 1292.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2192.0" y="1438.25" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="1457.25" text-anchor="middle" class="label">分布导向</text>
+<path d="M 2140 722.5 C 2225.0 722.5, 2225.0 1292.5, 2310 1292.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2192.0" y="984.5" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2225.0" y="1003.5" text-anchor="middle" class="label">少量修正</text>
+<path d="M 2290 149.0 C 2300.0 149.0, 2300.0 1572.5, 2310 1572.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2267.0" y="837.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2300.0" y="856.75" text-anchor="middle" class="label">门禁</text>
+<path d="M 1820 149.0 C 2065.0 149.0, 2065.0 1572.5, 2310 1572.5" fill="none" stroke="#334155" stroke-width="2.6" opacity="0.62" marker-end="url(#arrow)"/>
+<rect x="2032.0" y="837.75" width="66" height="27" rx="13" fill="#ffffff" opacity="0.86"/>
+<text x="2065.0" y="856.75" text-anchor="middle" class="label">统一记录</text>
+<rect x="80" y="90" width="430" height="118" rx="22" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" filter="url(#shadow)"/>
+<text x="295.0" y="118.5" text-anchor="middle" class="node">全局数据</text>
+<text x="295.0" y="143.5" text-anchor="middle" class="node">训练: 2025已知特征+真实电价</text>
+<text x="295.0" y="168.5" text-anchor="middle" class="node">测试/推理: 2026 Jan-Feb特征</text>
+<text x="295.0" y="193.5" text-anchor="middle" class="node">核心7个边界预测值</text>
+<rect x="550" y="90" width="390" height="118" rx="22" fill="#fef3c7" stroke="#d97706" stroke-width="3" filter="url(#shadow)"/>
+<text x="745.0" y="118.5" text-anchor="middle" class="node">全局时间特征</text>
+<text x="745.0" y="143.5" text-anchor="middle" class="node">slot/hour/month/dayofweek</text>
+<text x="745.0" y="168.5" text-anchor="middle" class="node">所有点预测模型共用</text>
+<text x="745.0" y="193.5" text-anchor="middle" class="node">不是某个单独实验</text>
+<rect x="980" y="90" width="390" height="118" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="3" filter="url(#shadow)"/>
+<text x="1175.0" y="118.5" text-anchor="middle" class="node">全局调度约束</text>
+<text x="1175.0" y="143.5" text-anchor="middle" class="node">96点/天; 8点连续充电</text>
+<text x="1175.0" y="168.5" text-anchor="middle" class="node">8点连续放电; 放电在后</text>
+<text x="1175.0" y="193.5" text-anchor="middle" class="node">枚举3321合法pair</text>
+<rect x="1410" y="90" width="410" height="118" rx="22" fill="#f8fafc" stroke="#475569" stroke-width="3" filter="url(#shadow)"/>
+<text x="1615.0" y="118.5" text-anchor="middle" class="node">全局评估/门禁</text>
+<text x="1615.0" y="143.5" text-anchor="middle" class="node">rolling fold + daily profit</text>
+<text x="1615.0" y="168.5" text-anchor="middle" class="node">all5fold / Jan-Feb-like</text>
+<text x="1615.0" y="193.5" text-anchor="middle" class="node">test-like / online risk</text>
+<rect x="1860" y="90" width="430" height="118" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="2075.0" y="118.5" text-anchor="middle" class="node">全局原则</text>
+<text x="2075.0" y="143.5" text-anchor="middle" class="node">fold-safe: 不用held-out真实收益挑规则</text>
+<text x="2075.0" y="168.5" text-anchor="middle" class="node">提交前看线上风险</text>
+<text x="2075.0" y="193.5" text-anchor="middle" class="node">低于+100/日不提交</text>
+<rect x="80" y="315" width="360" height="98" rx="22" fill="#ffffff" stroke="#0284c7" stroke-width="3" filter="url(#shadow)"/>
+<text x="260.0" y="346.0" text-anchor="middle" class="node">基础输入包 A</text>
+<text x="260.0" y="371.0" text-anchor="middle" class="node">7个边界预测值 + 全局时间特征</text>
+<text x="260.0" y="396.0" text-anchor="middle" class="node">absolute target</text>
+<rect x="80" y="470" width="360" height="118" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="3" filter="url(#shadow)"/>
+<text x="260.0" y="498.5" text-anchor="middle" class="node">业务派生包 B</text>
+<text x="260.0" y="523.5" text-anchor="middle" class="node">bid_space / net_load</text>
+<text x="260.0" y="548.5" text-anchor="middle" class="node">renewable_ratio / tie_line_ratio</text>
+<text x="260.0" y="573.5" text-anchor="middle" class="node">non_market_ratio</text>
+<rect x="80" y="650" width="360" height="118" rx="22" fill="#ffffff" stroke="#ca8a04" stroke-width="3" filter="url(#shadow)"/>
+<text x="260.0" y="678.5" text-anchor="middle" class="node">天气包 C</text>
+<text x="260.0" y="703.5" text-anchor="middle" class="node">NWP风速/GHI/云量/气压</text>
+<text x="260.0" y="728.5" text-anchor="middle" class="node">UTC+8与lead_time对齐</text>
+<text x="260.0" y="753.5" text-anchor="middle" class="node">含month-hour residual</text>
+<rect x="80" y="835" width="360" height="98" rx="22" fill="#ffffff" stroke="#c026d3" stroke-width="3" filter="url(#shadow)"/>
+<text x="260.0" y="866.0" text-anchor="middle" class="node">日历增强包 D</text>
+<text x="260.0" y="891.0" text-anchor="middle" class="node">holiday / weekly_relative</text>
+<text x="260.0" y="916.0" text-anchor="middle" class="node">注意: 基础时间特征已全局共用</text>
+<rect x="80" y="990" width="360" height="98" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="260.0" y="1021.0" text-anchor="middle" class="node">预测误差增强包 E</text>
+<text x="260.0" y="1046.0" text-anchor="middle" class="node">边界预测误差扰动</text>
+<text x="260.0" y="1071.0" text-anchor="middle" class="node">风光/天气修正尝试</text>
+<rect x="590" y="300" width="385" height="110" rx="22" fill="#dbeafe" stroke="#2563eb" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="324.5" text-anchor="middle" class="node">LGB baseline all-past</text>
+<text x="782.5" y="349.5" text-anchor="middle" class="node">输入: A</text>
+<text x="782.5" y="374.5" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="399.5" text-anchor="middle" class="node">用途: 基础成员</text>
+<rect x="590" y="455" width="385" height="110" rx="22" fill="#dbeafe" stroke="#2563eb" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="467.0" text-anchor="middle" class="node">LGB baseline 180d</text>
+<text x="782.5" y="492.0" text-anchor="middle" class="node">输入: A</text>
+<text x="782.5" y="517.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="542.0" text-anchor="middle" class="node">窗口: 180天</text>
+<text x="782.5" y="567.0" text-anchor="middle" class="node">用途: 基础成员</text>
+<rect x="590" y="610" width="385" height="128" rx="22" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="631.0" text-anchor="middle" class="node">LGB segmented_6 180d</text>
+<text x="782.5" y="656.0" text-anchor="middle" class="node">输入: A</text>
+<text x="782.5" y="681.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="706.0" text-anchor="middle" class="node">6个日内时段分别训练</text>
+<text x="782.5" y="731.0" text-anchor="middle" class="node">状态: 候选</text>
+<rect x="590" y="790" width="385" height="142" rx="22" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="818.0" text-anchor="middle" class="node">LGB segmented_6_margin_core</text>
+<text x="782.5" y="843.0" text-anchor="middle" class="node">输入: A + B子集</text>
+<text x="782.5" y="868.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="893.0" text-anchor="middle" class="node">每个时段不同业务特征</text>
+<text x="782.5" y="918.0" text-anchor="middle" class="node">状态: 稳定性候选</text>
+<rect x="590" y="985" width="385" height="128" rx="22" fill="#f1f5f9" stroke="#64748b" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="1006.0" text-anchor="middle" class="node">CatBoost 180d</text>
+<text x="782.5" y="1031.0" text-anchor="middle" class="node">输入: A</text>
+<text x="782.5" y="1056.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="1081.0" text-anchor="middle" class="node">窗口: 180天</text>
+<text x="782.5" y="1106.0" text-anchor="middle" class="node">状态: 单独不如冠军</text>
+<rect x="590" y="1165" width="385" height="128" rx="22" fill="#f1f5f9" stroke="#64748b" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="1186.0" text-anchor="middle" class="node">XGBoost 180d</text>
+<text x="782.5" y="1211.0" text-anchor="middle" class="node">输入: A</text>
+<text x="782.5" y="1236.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="1261.0" text-anchor="middle" class="node">窗口: 180天</text>
+<text x="782.5" y="1286.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="590" y="1345" width="385" height="128" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="1366.0" text-anchor="middle" class="node">NWP全局入模</text>
+<text x="782.5" y="1391.0" text-anchor="middle" class="node">输入: A + C</text>
+<text x="782.5" y="1416.0" text-anchor="middle" class="node">目标: absolute price</text>
+<text x="782.5" y="1441.0" text-anchor="middle" class="node">core/inter/full-grid均试过</text>
+<text x="782.5" y="1466.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="590" y="1525" width="385" height="128" rx="22" fill="#fae8ff" stroke="#c026d3" stroke-width="3" filter="url(#shadow)"/>
+<text x="782.5" y="1558.5" text-anchor="middle" class="node">日历/周特征全局blend</text>
+<text x="782.5" y="1583.5" text-anchor="middle" class="node">输入: A + D</text>
+<text x="782.5" y="1608.5" text-anchor="middle" class="node">holiday05/10 weekly05/10</text>
+<text x="782.5" y="1633.5" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1165" y="330" width="390" height="130" rx="22" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="364.5" text-anchor="middle" class="node">Ensemble 形成主线</text>
+<text x="1360.0" y="389.5" text-anchor="middle" class="node">0.25 LGB all + 0.25 LGB180</text>
+<text x="1360.0" y="414.5" text-anchor="middle" class="node">+ 0.5 segmented_6</text>
+<text x="1360.0" y="439.5" text-anchor="middle" class="node">输入: A; 目标: absolute</text>
+<rect x="1165" y="515" width="390" height="115" rx="22" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="542.0" text-anchor="middle" class="node">Prior dispatch增强</text>
+<text x="1360.0" y="567.0" text-anchor="middle" class="node">基于历史充/放电位置分布</text>
+<text x="1360.0" y="592.0" text-anchor="middle" class="node">lambda_charge=0.18</text>
+<text x="1360.0" y="617.0" text-anchor="middle" class="node">lambda_discharge=0.40</text>
+<rect x="1165" y="685" width="390" height="142" rx="22" fill="#93c5fd" stroke="#1d4ed8" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="713.0" text-anchor="middle" class="node">当前冠军</text>
+<text x="1360.0" y="738.0" text-anchor="middle" class="node">ens_champion_segmented6_prior_5fold</text>
+<text x="1360.0" y="763.0" text-anchor="middle" class="node">输入: A + 全局时间</text>
+<text x="1360.0" y="788.0" text-anchor="middle" class="node">目标: absolute ensemble</text>
+<text x="1360.0" y="813.0" text-anchor="middle" class="node">线上: 5482</text>
+<rect x="1165" y="900" width="390" height="128" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="933.5" text-anchor="middle" class="node">目标/loss路线</text>
+<text x="1360.0" y="958.5" text-anchor="middle" class="node">L1/L2/Huber/centered/zscore/rank</text>
+<text x="1360.0" y="983.5" text-anchor="middle" class="node">输入多为A</text>
+<text x="1360.0" y="1008.5" text-anchor="middle" class="node">结论: 未超过冠军</text>
+<rect x="1165" y="1080" width="390" height="128" rx="22" fill="#fdf2f8" stroke="#db2777" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="1113.5" text-anchor="middle" class="node">窗口均价模型</text>
+<text x="1360.0" y="1138.5" text-anchor="middle" class="node">输入: A + 窗口聚合</text>
+<text x="1360.0" y="1163.5" text-anchor="middle" class="node">目标: 2小时窗口均价</text>
+<text x="1360.0" y="1188.5" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1165" y="1260" width="390" height="142" rx="22" fill="#fdf2f8" stroke="#db2777" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="1288.0" text-anchor="middle" class="node">pair-spread / E2E</text>
+<text x="1360.0" y="1313.0" text-anchor="middle" class="node">输入: A 或 A+B+C残差</text>
+<text x="1360.0" y="1338.0" text-anchor="middle" class="node">目标: 合法pair价差</text>
+<text x="1360.0" y="1363.0" text-anchor="middle" class="node">含3321 pair派生样本</text>
+<text x="1360.0" y="1388.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1165" y="1460" width="390" height="115" rx="22" fill="#f8fafc" stroke="#64748b" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="1487.0" text-anchor="middle" class="node">浅树正则路线</text>
+<text x="1360.0" y="1512.0" text-anchor="middle" class="node">输入: champion同构A</text>
+<text x="1360.0" y="1537.0" text-anchor="middle" class="node">max_depth/num_leaves调小</text>
+<text x="1360.0" y="1562.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1165" y="1615" width="390" height="115" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1360.0" y="1642.0" text-anchor="middle" class="node">forecast-error augmentation</text>
+<text x="1360.0" y="1667.0" text-anchor="middle" class="node">输入: A + E</text>
+<text x="1360.0" y="1692.0" text-anchor="middle" class="node">模拟预测误差扰动</text>
+<text x="1360.0" y="1717.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1735" y="300" width="405" height="125" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="332.0" text-anchor="middle" class="node">TopK候选诊断</text>
+<text x="1937.5" y="357.0" text-anchor="middle" class="node">从冠军预测曲线枚举top10 pair</text>
+<text x="1937.5" y="382.0" text-anchor="middle" class="node">oracle: +737.6/日</text>
+<text x="1937.5" y="407.0" text-anchor="middle" class="node">说明选pair仍有空间</text>
+<rect x="1735" y="480" width="405" height="130" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="514.5" text-anchor="middle" class="node">TopK learned reranker</text>
+<text x="1937.5" y="539.5" text-anchor="middle" class="node">输入: champion top10 + pair特征</text>
+<text x="1937.5" y="564.5" text-anchor="middle" class="node">含fold-safe NWP residual检查</text>
+<text x="1937.5" y="589.5" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1735" y="665" width="405" height="115" rx="22" fill="#fff7ed" stroke="#ea580c" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="692.0" text-anchor="middle" class="node">保守topK switch</text>
+<text x="1937.5" y="717.0" text-anchor="middle" class="node">输入: top10 + bid_space/weather风险</text>
+<text x="1937.5" y="742.0" text-anchor="middle" class="node">结果: +25.7/日</text>
+<text x="1937.5" y="767.0" text-anchor="middle" class="node">状态: 诊断候选, 不提交</text>
+<rect x="1735" y="830" width="405" height="130" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="864.5" text-anchor="middle" class="node">坏日动作选择</text>
+<text x="1937.5" y="889.5" text-anchor="middle" class="node">输入: top10 + risk actions</text>
+<text x="1937.5" y="914.5" text-anchor="middle" class="node">动作: rank2/3/consensus/prior-off/aux</text>
+<text x="1937.5" y="939.5" text-anchor="middle" class="node">结果: +0.86/日; 拒绝</text>
+<rect x="1735" y="1015" width="405" height="130" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="1049.5" text-anchor="middle" class="node">天气/竞价空间辅助switch</text>
+<text x="1937.5" y="1074.5" text-anchor="middle" class="node">输入: top10 + B + C残差</text>
+<text x="1937.5" y="1099.5" text-anchor="middle" class="node">不是重新训练价格模型</text>
+<text x="1937.5" y="1124.5" text-anchor="middle" class="node">结果: -10.2/日; 拒绝</text>
+<rect x="1735" y="1200" width="405" height="145" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="1242.0" text-anchor="middle" class="node">模型家族fallback</text>
+<text x="1937.5" y="1267.0" text-anchor="middle" class="node">输入: Cat/XGB/seg6/margin6各自top1</text>
+<text x="1937.5" y="1292.0" text-anchor="middle" class="node">每个模型节点已标注输入A/B</text>
+<text x="1937.5" y="1317.0" text-anchor="middle" class="node">oracle +982.4; 规则 -56.8</text>
+<rect x="1735" y="1405" width="405" height="115" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="1432.0" text-anchor="middle" class="node">no-trade / tau</text>
+<text x="1937.5" y="1457.0" text-anchor="middle" class="node">输入: champion预测价差/置信度</text>
+<text x="1937.5" y="1482.0" text-anchor="middle" class="node">问题: 过滤赚钱日</text>
+<text x="1937.5" y="1507.0" text-anchor="middle" class="node">状态: 拒绝</text>
+<rect x="1735" y="1570" width="405" height="120" rx="22" fill="#fef3c7" stroke="#d97706" stroke-width="3" filter="url(#shadow)"/>
+<text x="1937.5" y="1599.5" text-anchor="middle" class="node">冬季/线上分布诊断</text>
+<text x="1937.5" y="1624.5" text-anchor="middle" class="node">输入: 全局评估层</text>
+<text x="1937.5" y="1649.5" text-anchor="middle" class="node">holiday_only线上5370暴露风险</text>
+<text x="1937.5" y="1674.5" text-anchor="middle" class="node">Jan-Feb-like不能单独决策</text>
+<rect x="2310" y="425" width="380" height="125" rx="22" fill="#dbeafe" stroke="#2563eb" stroke-width="3" filter="url(#shadow)"/>
+<text x="2500.0" y="469.5" text-anchor="middle" class="node">结论1: 保留冠军锚点</text>
+<text x="2500.0" y="494.5" text-anchor="middle" class="node">全局替代多数失败</text>
+<text x="2500.0" y="519.5" text-anchor="middle" class="node">新方案需证明线上风险更低</text>
+<rect x="2310" y="665" width="380" height="145" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+<text x="2500.0" y="707.0" text-anchor="middle" class="node">结论2: 停止简单加复杂度</text>
+<text x="2500.0" y="732.0" text-anchor="middle" class="node">简单gate/fallback不够</text>
+<text x="2500.0" y="757.0" text-anchor="middle" class="node">全局天气/日历blend不够</text>
+<text x="2500.0" y="782.0" text-anchor="middle" class="node">窗口/E2E暂不做主线</text>
+<rect x="2310" y="940" width="380" height="145" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="3" filter="url(#shadow)"/>
+<text x="2500.0" y="982.0" text-anchor="middle" class="node">结论3: 失败组件可复用</text>
+<text x="2500.0" y="1007.0" text-anchor="middle" class="node">B/C/D/E不宜全局替代</text>
+<text x="2500.0" y="1032.0" text-anchor="middle" class="node">但可做风险信号/局部专家</text>
+<text x="2500.0" y="1057.0" text-anchor="middle" class="node">必须fold-safe验证</text>
+<rect x="2310" y="1215" width="380" height="155" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="3" filter="url(#shadow)"/>
+<text x="2500.0" y="1249.5" text-anchor="middle" class="node">下一步方向</text>
+<text x="2500.0" y="1274.5" text-anchor="middle" class="node">冬季/test-like局部专家</text>
+<text x="2500.0" y="1299.5" text-anchor="middle" class="node">更强可见风险信号</text>
+<text x="2500.0" y="1324.5" text-anchor="middle" class="node">只改少量高置信坏日</text>
+<text x="2500.0" y="1349.5" text-anchor="middle" class="node">不做大面积重排</text>
+<rect x="2310" y="1510" width="380" height="125" rx="22" fill="#f8fafc" stroke="#475569" stroke-width="3" filter="url(#shadow)"/>
+<text x="2500.0" y="1542.0" text-anchor="middle" class="node">工程约束</text>
+<text x="2500.0" y="1567.0" text-anchor="middle" class="node">experiment_index/map</text>
+<text x="2500.0" y="1592.0" text-anchor="middle" class="node">online risk dashboard</text>
+<text x="2500.0" y="1617.0" text-anchor="middle" class="node">数据泄露检查 / submit校验</text>
+<rect x="2320" y="80" width="410" height="150" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<text x="2525" y="115" text-anchor="middle" class="stage">图例</text>
+<line x1="2348" y1="145" x2="2415" y2="145" stroke="#334155" stroke-width="3"/>
+<text x="2382" y="138" text-anchor="middle" class="label">实线</text>
+<text x="2435" y="152" class="label">直接衍生/主路径</text>
+<line x1="2348" y1="177" x2="2415" y2="177" stroke="#334155" stroke-width="3" stroke-dasharray="10 8"/>
+<text x="2382" y="170" text-anchor="middle" class="label">虚线</text>
+<text x="2435" y="184" class="label">交叉复用/失败后转辅助</text>
+<text x="2382" y="216" text-anchor="middle" class="label">A/B/C/D/E</text>
+<text x="2435" y="216" class="label">输入包编号，节点内说明</text>
+</svg>

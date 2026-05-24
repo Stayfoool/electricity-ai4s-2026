@@ -1,0 +1,2 @@
+model,mean_profit,min_profit,mean_rmse,mean_curve_z_rmse,loss_days,mean_regret,mean_charge_gap,mean_discharge_gap,profit_delta_vs_champion,loss_day_delta_vs_champion,regret_delta_vs_champion
+sequence_tcn_centered_5fold,8684.513407695813,6082.416653987584,1.3382263818637934,0.8260408078416697,9,3931.7892857700876,14.350960061443933,10.122388632872504,-597.8908502498771,4,597.8908502498791

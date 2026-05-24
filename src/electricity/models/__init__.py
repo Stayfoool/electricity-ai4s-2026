@@ -1,5 +1,12 @@
 from .lgbm import predict_lgbm, train_lgbm, train_lgbm_full
-from .tabular import best_iteration, model_backend, predict_model, train_model, train_model_full
+from .tabular import (
+    best_iteration,
+    model_backend,
+    predict_model,
+    train_model,
+    train_model_full,
+    validate_model_features,
+)
 
 __all__ = [
     "best_iteration",
@@ -10,4 +17,5 @@ __all__ = [
     "train_lgbm_full",
     "train_model",
     "train_model_full",
+    "validate_model_features",
 ]

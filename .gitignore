@@ -12,6 +12,7 @@ __pycache__/
 .env
 
 # Competition data and local-only materials
+eletricmaterial
 eletricmaterial/
 electricity_data/
 /data/
@@ -31,8 +32,16 @@ papers_txt/
 *.onnx
 
 # Keep reports/configs in Git; selected output CSVs may be committed intentionally.
+output.csv
 outputs/tmp/
 outputs/cache/
+
+# Large detailed diagnostics/caches. Keep compact summaries and reports in Git.
+reports/predictions_*.csv
+reports/cache_predictions_*.csv
+reports/*_dataset.csv
+reports/*_selected_daily.csv
+reports/*_rule_search.csv
 
 # Derived weather diagnostics caches
 reports/weather_hourly_spatial_features.csv
